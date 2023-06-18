@@ -1,0 +1,90 @@
+﻿@model IEnumerable<FinalProject.Data.Employee>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 text-start px-4">
+            <a asp-action="Create" type="button" class="btn btn-outline-secondary">Create New</a>
+        </div>
+        <div class="col-6 text-end px-5">
+            @using (Html.BeginForm())
+            {
+                <p class="text-right">
+                    關鍵字 @Html.TextBox("textkey")  <input type="submit" value="查詢" />
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        
+@{  
+
+    @foreach (var item in Model)
+    {
+        // 格式化日期
+        var JoinDate = Convert.ToDateTime(item.JoinDate).ToString("yyyy/MM/dd");
+
+                <div class="d-flex card col-4">
+                    <img src="~/imgs/@item.Image" width="500px" ;center,top" class="card-img-top mt-2" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayNameFor(model => model.Name) : @Html.DisplayFor(modelItem => item.Name)</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Telephone) : @Html.DisplayFor(modelItem => item.Telephone)</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Email) : @Html.DisplayFor(modelItem => item.Email.Email)</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Birthday) : @Html.DisplayFor(modelItem => item.Birthday)</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Address) : @Html.DisplayFor(modelItem => item.Address)</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.JoinDate) : @JoinDate</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Title) : @Html.DisplayFor(modelItem => item.Title)</li>
+
+            </ul>
+            <div class="card-body d-flex justify-content-center">
+                <!-- 前往編輯頁面的按鈕 -->
+                <a asp-action="Edit" asp-route-id="@item.EmployeeId" class="card-link">
+                    <button type="button" class="btn btn-primary">修改</button>
+                </a>
+
+                <!-- 執行刪除的按鈕 -->
+                <a asp-action="Delete" asp-route-id="@item.EmployeeId" class="card-link">
+                    <button type="button" class="btn btn-danger">
+                        刪除
+                    </button>
+                </a>
+
+            </div>
+        </div>
+    }
+
+}
+
+
+<!-- 用於分頁的導航列 -->
+
+        <nav aria-label="Page navigation" class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            <!-- 使用for迴圈建立分頁按鈕 -->
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "Index")">
+            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+            }
+        </ul>
+    </nav>
+    </div>
+</div>
+
+
+
