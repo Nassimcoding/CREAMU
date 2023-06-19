@@ -1,0 +1,385 @@
+﻿@model FinalProject.ViewModel.CCustomizedProdViewModel
+@{
+    ViewData["Title"] = "CustomizedProd";
+}
+<link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+
+<link href="~/css/reset.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/common.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/swiper.css" rel="stylesheet" type="text/css" />
+<link href="~/css/top_pages.css" rel="stylesheet" type="text/css" media="all" />
+
+
+<h1>CustomizedProd</h1>
+<p>
+    <a asp-action="AddToCart">檢視購物車</a>
+</p>
+<style>
+.center-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 65vh; /* 或根据需要设置适当的高度 */
+}
+</style>
+@using (Html.BeginForm())//一定要有這一行，才能夠抓到name的值
+{
+    @Html.AntiForgeryToken()//會產生包含防偽標記的隱藏字段的HTML標記
+
+    <div class="form-group">
+
+    <div class="container">
+      <!--響應式容器-->
+      <div class="row">
+       <!--同一列-->
+           <div class="col-lg-6">
+               <div class="center-image">
+
+                <img src="~/imgs/01.jpg" alt="Customized"width="960"class="img-fluid" >
+               </div>
+           </div>
+
+        
+        <div class="col-lg-3"><!--Model-->
+        <h4>Models</h4>
+        <p>Head：</p>
+        <select name="HeadID" id="head" onchange="updateTd('head')">
+            <option value="">請選擇Model</option>
+            @foreach(var item in Model.Head)
+            {
+                <option value="@item.ModelId">@item.ModelName</option>   
+            }
+        </select>
+        <p>Body：</p>
+        <select name="BodyID" id="body" onchange="updateTd('body')">
+            <option value="">請選擇Model</option>
+            @foreach(var item in Model.Body)
+            {
+                <option value="@item.ModelId">@item.ModelName</option>   
+            }
+        </select>
+        <p>Right Hand：</p>
+        <select name="RHID" id="rhand" onchange="updateTd('rhand')">
+            <option value="">請選擇Model</option>
+            @{foreach(var item in Model.RH)
+                    {
+                        <option value="@item.ModelId">@item.ModelName</option>   
+                    }
+                }
+        </select>
+        <p>Left Hand：</p>
+        <select name="LHID" id="lhand" onchange="updateTd('lhand')">
+            <option value="">請選擇Model</option>
+            @{foreach(var item in Model.LH)
+                    {
+                        <option value="@item.ModelId">@item.ModelName</option>   
+                    }
+                }
+        </select>
+        <p>Right Foot：</p>
+        <select name="RFID" id="rfoot" onchange="updateTd('rfoot')">
+                <option value="">請選擇Model</option>
+                @{foreach(var item in Model.RF)
+                    {
+                        <option value="@item.ModelId">@item.ModelName</option>   
+                    }
+                }
+        </select>
+        <p>Left Foot：</p>
+        <select name="LFID" id="lfoot" onchange="updateTd('lfoot')">
+                <option value="">請選擇Model</option>
+                @{foreach(var item in Model.LF)
+                    {
+                        <option value="@item.ModelId">@item.ModelName</option>   
+                    }
+                }
+        </select>
+        <hr />
+        <p>購買數量：</p>
+            <div>
+            @Html.TextBox("count", "1", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div><!--Model-->
+        <div class="col-lg-3"><!--Material-->
+            <h4>Material</h4>
+            <p>Head：</p>
+            <select name="HeadID_M" id="mhead" onchange="updateTd('mhead')">
+                <option value="">請選擇Material</option>
+                @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <p>Body：</p>
+            <select name="BodyID_M" id="mbody"onchange="updateTd('mbody')">
+                <option value="">請選擇Material</option>
+                @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <p>Right Hand：</p>
+            <select name="RHID_M" id="mrhand" onchange="updateTd('mrhand')">
+                <option value="">請選擇Material</option>
+                @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <p>Left Hand：</p>
+            <select name="LHID_M" id="mlhand" onchange="updateTd('mlhand')">
+                <option value="">請選擇Material</option>
+                @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <p>Right Foot：</p>
+            <select name="RFID_M" id="mrfoot" onchange="updateTd('mrfoot')">
+                    <option value="">請選擇Material</option>
+                    @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <p>Left Foot：</p>
+            <select name="LFID_M" id="mlfoot" onchange="updateTd('mlfoot')">
+                    <option value="">請選擇Material</option>
+                    @{foreach(var item in Model.Materials)
+                    {
+                        <option value="@item.MaterialId">@item.MaterialName</option>   
+                    }
+                }
+            </select>
+            <hr />
+            <div class="form-group">
+                <div class="col-md-offset-0 col-md-10">
+                    <input type="submit" value="購買" class="btn btn-default" />
+                </div>
+            </div>
+            </div><!--Material-->
+                
+
+    </div><!--row-->
+    <div class="row"><!--row2-->
+        <h2>價格試算</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Data</th>
+                <th scope="col">Model</th>
+                <th scope="col">C_Price</th>
+                <th scope="col">+</th>
+                <th scope="col">Material</th>
+                <th scope="col">M_Price</th>
+                <!--<th scope="col">=</th>
+                <th scope="col">SubTotal</th>-->
+              </tr>
+            </thead>
+            <tr>
+              <td scope="row">Head:</td>
+              <td id="tdhead" value="100002" name="HeadID"></td>
+              <td id="tdheadP">0</td>
+              <td>+</td>
+              <td id="tdmhead_M" value="123" name="HeadID_M"></td>
+              <td id="tdmhead_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_head"></td>-->
+            </tr>
+            <tr>
+              <td scope="row">Body:</td>
+              <td id="tdbody" value="" name="BodyID"></td>
+              <td id="tdbodyP">0</td>
+              <td>+</td>
+              <td id="tdmbody_M"  value="" name="BodyID_M"></td>
+              <td id="tdmbody_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_body"></td>-->
+            </tr>
+            <tr>
+              <td scope="row">RightHand:</td>
+              <td id="tdrhand" value="" name="RHID" ></td>
+              <td id="tdrhandP">0</td>
+              <td>+</td>
+              <td id="tdmrhand_M"  value="" name="RHID_M" ></td>
+              <td id="tdmrhand_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_rhand"></td>-->
+            </tr>
+            <tr>
+              <td scope="row">LeftHand:</td>
+              <td id="tdlhand" value="" name="LHID"></td>
+              <td id="tdlhandP">0</td>
+              <td>+</td>
+              <td id="tdmlhand_M" value="" name="LHID_M"></td>
+              <td id="tdmlhand_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_lhand"></td>-->
+            </tr>
+            <tr>
+              <td scope="row">RightFoot:</td>
+              <td id="tdrfoot" value="" name="RFID"></td>
+              <td id="tdrfootP">0</td>
+              <td>+</td>
+              <td id="tdmrfoot_M" value="" name="RFID_M"></td>
+              <td id="tdmrfoot_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_rfoot"></td>-->
+            </tr>
+            <tr>
+              <td scope="row">LeftFoot:</td>
+              <td id="tdlfoot" value="" name="LFID"></td>
+              <td id="tdlfootP">0</td>
+              <td>+</td>
+              <td id="tdmlfoot_M"></td>
+              <td id="tdmlfoot_MP">0</td>
+              <!--<td>=</td>
+              <td id="sum_lfoot"></td>-->
+            </tr>
+          </table>
+    </div><!--row2-->
+</div><!--Container--> 
+</div><!--formgroup--> 
+    }
+
+
+
+
+
+    <script>
+    /*--------------------------------------------<<下拉選單取ID>>--------------------------------------------*/
+    
+
+    /*
+    var tdModP = document.getElementById('tdheadP');
+    var tdMatP = document.getElementById('tdmhead_MP'');
+    var modValue = parseInt(tdModP.textContent);
+    var matValue = parseInt(tdMatP.textContent);
+    var sum = modValue+matValue;
+
+    console.log(sum);
+     */   
+
+    
+
+
+    function updateTd(elementId) {
+
+    var selectElement = document.getElementById(elementId);
+    var selectedValue = selectElement.value;
+    selectElement.setAttribute("value", selectedValue);
+
+    var selectedText = selectElement.options[selectElement.selectedIndex].text;
+
+    // 判断参数开头是否包含 'm'
+    var isMaterial = elementId.startsWith("m");
+
+    var subtotalCell;
+    var modelPrice;
+    var materialPrice;
+    // 根据elementId选择要更新的表格单元格
+    if(!isMaterial){//model
+        var modelCell = document.getElementById("td" + elementId);
+        var modpriceCell = document.getElementById("td" + elementId + "P");
+        var MATpriceCell = document.getElementById("tdm" + elementId + "_MP");
+        var textContent = MATpriceCell.textContent;
+        var MATValue = parseInt(textContent);
+        console.log(MATValue);
+        subtotalCell = document.getElementById("sum_" + elementId);
+
+        // 更新组件名称和价格
+        modelCell.textContent = selectedText;//更新名稱
+        getModPrice(modpriceCell, selectedValue);//更新價格
+
+
+        // 计算小计价格
+
+    }else{//material
+        var materialCell = document.getElementById("td" + elementId + "_M");
+        var materialPriceCell = document.getElementById("td" + elementId + "_MP");
+        var MODpriceCell = document.getElementById("td" + elementId + "MP");
+        elementId = elementId.substring(1);
+        subtotalCell = document.getElementById("sum_" + elementId);
+        
+        // 更新材料名称和价格
+        materialCell.textContent = selectedText;//更新名稱
+        getMatPrice(materialPriceCell, selectedValue);//更新價格
+        // 计算小计价格
+        //calculateSubTotal();
+        }
+        console.log(selectedValue);
+        console.log(isMaterial);
+
+    }
+
+    /*--------------------------------------------<<找價格>>--------------------------------------------*/
+    function getModPrice(td,selectedID){
+         // 发送 AJAX 请求到服务器端，将 HeadID 发送给控制器的 GetPrice 方法
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var price = xhr.responseText;
+
+                // 将价格更新到 headprice 元素中
+                td.textContent = price;
+            }
+        };
+        xhr.open('GET', '/CustomizedP/GetModPrice?id=' + selectedID, true); // 控制器和方法的路径
+        xhr.send();
+    }
+    //查找Material的價格
+    function getMatPrice(td,selectedID){//(標籤名稱,被選到的ID)
+         // 发送 AJAX 请求到服务器端，将 HeadID 发送给控制器的 GetPrice 方法
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var price = xhr.responseText;
+
+                // 将价格更新到 headprice 元素中
+                td.textContent = price;
+            }
+        };
+        xhr.open('GET', '/CustomizedP/GetMatPrice?id=' + selectedID, true); // 控制器和方法的路径
+        xhr.send();
+    }
+
+    //計算價格Model+Material
+function calculateSubTotal() {
+var cPriceCells = document.querySelectorAll("th[scope='col'].C_Price");
+var mPriceCells = document.querySelectorAll("th[scope='col'].M_Price");
+var subTotalCells = document.querySelectorAll("th[scope='col'].SubTotal");
+
+  // 获取C_Price和M_Price的数量
+  var count = Math.min(cPriceCells.length, mPriceCells.length);
+
+  // 遍历每个位置的C_Price、M_Price和SubTotal单元格
+  for (var i = 0; i < count; i++) {
+    var cPriceCell = cPriceCells[i];
+    var mPriceCell = mPriceCells[i];
+    var subTotalCell = subTotalCells[i];
+
+    // 获取C_Price和M_Price的值
+    var cPrice = parseFloat(cPriceCell.textContent);
+    var mPrice = parseFloat(mPriceCell.textContent);
+
+    // 计算加总并更新SubTotal单元格
+    var subTotal = cPrice + mPrice;
+    subTotalCell.textContent = subTotal.toFixed(2);
+
+    console.log(cPrice);
+    console.log(mPrice);
+    }
+}
+
+
+</script>
