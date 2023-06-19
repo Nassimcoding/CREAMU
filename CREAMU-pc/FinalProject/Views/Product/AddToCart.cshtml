@@ -1,0 +1,73 @@
+﻿@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()   
+    <input type="hidden" name="txtFId" value="@Model.ProductId" />
+}
+
+@model FinalProject.Data.Product
+@{
+    ViewData["Title"] = "AddToCart";
+}
+
+<h1 class="">@Model.ProductName</h1>
+
+@*商品選單跳轉連結*@
+<div class="navbar navbar-expand-lg navbar-dark bg-light">
+    <div class="container-fluid">
+       <div class="block-inner">    
+    <a class="Label text-dark text-decoration-underline" href="@Url.Action("ProductList", "Product", null)">全部商品</a>/ 
+    <a class="Label text-dark text-decoration-underline" href="@Url.Action("ProductList", "Product", null)">成品選購</a>            
+</div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    <div class="row-cols-md-4">
+        <input type="hidden" name="txtFId" value="@Model.ProductId" />
+
+        <div style="float: left; margin-left: 100px;">
+            <h3><img class="PImages" src="~/images/@Model.ProductImage" alt="商品圖片" width="400" height="400" /></h3>
+        </div>
+
+        <div style="float: left; margin-left: 350px;">
+            <h2>@Model.ProductName</h2>
+            <div style="width: 120%;">
+                <h>商品特色:<br>@Model.Descript,orem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</h>
+                <hr>
+            </div>
+
+            <h3>NT$@Model.Price</h3>
+            <h4 style="display: inline-block;">數量</h4>
+           <div class="input-group">
+            @*產品數量增減按鈕*@
+  <div class="input-group-prepend">
+    <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+  </div>
+
+  @Html.TextBox("txtCount", "1", new { @class = "form-control text-center", id = "quantityInput" })
+
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+  </div>
+  </div>
+            <div class="col-md-12">
+                <div class="d-grid">
+                    <input type="submit" value="加入購物車" class="btn btn-secondary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function decreaseQuantity() {
+        var quantityInput = document.getElementById('quantityInput');
+        if (quantityInput.value > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+        }
+    }
+
+    function increaseQuantity() {
+        var quantityInput = document.getElementById('quantityInput');
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
+</script>

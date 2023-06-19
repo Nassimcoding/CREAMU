@@ -1,0 +1,62 @@
+﻿@model IEnumerable<FinalProject.Data.Product>
+@{
+    ViewData["Title"] = "ProductList";
+}
+
+<h1>成品選購</h1>
+
+<div class="navbar-expand-lg navbar-dark bg-light">
+    <div class="container-fluid px-0">
+        <div class="block-inner">    
+    <a class="Label text-dark text-decoration-underline" href="@Url.Action("ProductList", "Product", null)">全部商品</a>/ 
+    <a class="Label text-dark text-decoration-underline" href="@Url.Action("ProductList", "Product", null)">成品選購</a>            
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="關鍵字" aria-label="關鍵字" name="txtKeyword">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">查詢</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<p>
+    <a class="Label text-dark text-decoration-underline" href="@Url.Action("CartView", "Product", null)">查看購物車</a>
+</p>
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="@Url.Action("AddToCart", "Product", new { id = item.ProductId })">
+                        <img src="~/images/@item.ProductImage" class="card-img-top" alt="商品圖片">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.ProductName</h5>
+                        <p class="card-text">單價: @item.Price</p>
+                        <a href="@Url.Action("AddToCart","Product")?id=@item.ProductId" class="btn btn-primary">選購商品</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (TempData["ShowAlert"] != null && (bool)TempData["ShowAlert"])
+{
+    <script>
+        alert("購物車目前沒有任何產品喔!    歡迎在逛逛看~");
+    </script>
+}

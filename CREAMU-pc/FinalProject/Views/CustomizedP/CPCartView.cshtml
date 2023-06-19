@@ -1,0 +1,81 @@
+﻿@model FinalProject.ViewModel.CCPAddToCartViewMode
+
+@{
+    ViewData["Title"] = "CPCartView";
+}
+
+<h1>Customized Price Cart</h1>
+
+
+
+<p>
+    
+</p>
+<table class="table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Model</th>
+                <th scope="col">Material</th>
+                <th scope="col">Component</th>
+              </tr>
+            </thead>
+            <tr>
+                <td>Head:</td>
+                <td>@ViewBag.HeadID</td>
+                <td>@ViewBag.HeadID_M</td>
+                <td>@ViewBag.HeadCom</td>
+            </tr>
+            <tr>
+                <td>Body:</td>
+                <td>@ViewBag.BodyID</td>
+                <td>@ViewBag.BodyID_M</td>
+                <td>@ViewBag.BodyCom</td>
+            </tr>
+            <tr>
+                <td>RightHand:</td>
+                <td>@ViewBag.RHID</td>
+                <td>@ViewBag.RHID_M</td>
+                <td>@ViewBag.ComRH</td>
+            </tr>
+            <tr>
+                <td>LeftHand:</td>
+                <td>@ViewBag.LHID</td>
+                <td>@ViewBag.LHID_M</td>
+                <td>@ViewBag.ComLH</td>
+            </tr>
+            <tr>
+                <td>RightFoot:</td>
+                <td>@ViewBag.RFID</td>
+                <td>@ViewBag.RFID_M</td>
+                <td>@ViewBag.ComRF</td>
+            </tr>
+            <tr>
+                <td>LeftFoot:</td>
+                <td>@ViewBag.LFID</td>
+                <td>@ViewBag.LFID_M</td>
+                <td>@ViewBag.ComLF</td>
+            </tr>
+
+
+            <h4>購買數量：@ViewBag.count</h4>
+            <h4>價　　格：@ViewBag.price</h4>
+            
+            
+            
+            
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+
+
+</table>
