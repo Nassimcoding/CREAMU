@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FinalProject.Data;
 using FinalProject.ViewModel;
-using FinalProject.Models;
 using System.Text.Json;
+using FinalProject.Models;
 
-namespace prjcreamUCustomized.Controllers
+namespace FinalProject.Controllers
 {
     public class CustomizedPController : Controller
     {
         
-        public IActionResult CustomizedProd(IEnumerable<ReadMaterial> materials)
+        public IActionResult CustomizedProd()
         {
             CreamUdbContext db = new CreamUdbContext();
             var materials = from m in db.Materials
@@ -36,14 +36,14 @@ namespace prjcreamUCustomized.Controllers
                      select M;
             var ModandMat = new CCustomizedProdViewModel
             {
-                Materials = (IEnumerable<ReadMaterial>)materials,
-                Models = (IEnumerable<ReadModel>)models,
-                Head = (IEnumerable<ReadModel>)head,
-                Body = (IEnumerable<ReadModel>)body,
-                RH = (IEnumerable<ReadModel>)rh,
-                LH = (IEnumerable<ReadModel>)lh,
-                RF = (IEnumerable<ReadModel>)rf,
-                LF = (IEnumerable<ReadModel>)lf
+                Materials = materials,
+                Models = models,
+                Head = head,
+                Body = body,
+                RH = rh,
+                LH = lh,
+                RF = rf,
+                LF = lf
             };
             ViewBag.HeadID = 123;
             ViewBag.BodyID = 55555;
@@ -54,12 +54,12 @@ namespace prjcreamUCustomized.Controllers
         {
             CreamUdbContext db = new CreamUdbContext();
             //找到ComponentID的資料
-            ReadComponent comHead = db.Components.FirstOrDefault(c => c.ModelId == vm.HeadID && c.MaterialId ==vm.HeadID_M);
-            ReadComponent comBody = db.Components.FirstOrDefault(c => c.ModelId == vm.BodyID && c.MaterialId == vm.BodyID_M);
-            ReadComponent comRH = db.Components.FirstOrDefault(c => c.ModelId == vm.RHID && c.MaterialId == vm.RHID_M);
-            ReadComponent comLH = db.Components.FirstOrDefault(c => c.ModelId == vm.LHID && c.MaterialId == vm.LHID_M);
-            ReadComponent comRF = db.Components.FirstOrDefault(c => c.ModelId == vm.RFID && c.MaterialId == vm.RFID_M);
-            ReadComponent comLF = db.Components.FirstOrDefault(c => c.ModelId == vm.LFID && c.MaterialId == vm.LFID_M);
+            Data.Component comHead = db.Components.FirstOrDefault(c => c.ModelId == vm.HeadID && c.MaterialId ==vm.HeadID_M);
+            Data.Component comBody = db.Components.FirstOrDefault(c => c.ModelId == vm.BodyID && c.MaterialId == vm.BodyID_M);
+            Data.Component comRH = db.Components.FirstOrDefault(c => c.ModelId == vm.RHID && c.MaterialId == vm.RHID_M);
+            Data.Component comLH = db.Components.FirstOrDefault(c => c.ModelId == vm.LHID && c.MaterialId == vm.LHID_M);
+            Data.Component comRF = db.Components.FirstOrDefault(c => c.ModelId == vm.RFID && c.MaterialId == vm.RFID_M);
+            Data.Component comLF = db.Components.FirstOrDefault(c => c.ModelId == vm.LFID && c.MaterialId == vm.LFID_M);
             
             ViewBag.HeadCom = comHead;
             ViewBag.BodyCom = comBody;
@@ -72,7 +72,7 @@ namespace prjcreamUCustomized.Controllers
             //計算總價
             
             int totalPrice = 0;
-            ReadModel model;
+            Model model;
             model = db.Models.FirstOrDefault(mp => mp.ModelId == vm.HeadID);
             if (model != null)
             {
@@ -103,7 +103,7 @@ namespace prjcreamUCustomized.Controllers
             {
                 totalPrice += model.Price;
             }
-            ReadMaterial material;
+            Material material;
             material = db.Materials.FirstOrDefault(mp => mp.MaterialId == vm.HeadID_M);
             if (material != null)
             {

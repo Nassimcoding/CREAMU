@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FinalProject.Data;
 
-namespace prjcreamUCustomized.Controllers
+namespace FinalProject.Controllers
 {
     public class ComponentsController : Controller
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FinalProject.Data;
 
-namespace FinalProject.Data
+namespace FinalProject.Models
 {
-    public partial class ReadComponent
+    public partial class Component
     {
         [Key]
         public int ComponentId { get; set; }
