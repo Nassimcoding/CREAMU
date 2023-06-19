@@ -1,0 +1,107 @@
+﻿@model IEnumerable<FinalProject.Data.Member>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<br />
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        @* <div class="col-6 text-start px-4">
+        <a asp-action="Create" type="button" class="btn btn-outline-secondary">Create New</a>
+        </div>*@
+        <div class="col-7 text-end px-0">
+            @using (Html.BeginForm())
+            {
+                <p>
+                    關鍵字 @Html.TextBox("textkey") <input type="submit" value="查詢">
+                </p>
+            }
+        </div>
+    </div>
+</div>
+<p>
+
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="">
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Birthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JoinDate)
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.Notes)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var item in Model)
+            {
+
+                var birthday = Convert.ToDateTime(item.Birthday).ToString("yyyy/MM/dd");
+                var JoinDate = Convert.ToDateTime(item.JoinDate).ToString("yyyy/MM/dd");
+                <tr>
+                    <td>
+                        <img src="~/imgs/@item.Image">
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Telephone)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @birthday
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Level)
+                    </td>
+                    <td>
+                        @JoinDate
+                    </td>
+                    @*            <td>
+            @Html.DisplayFor(modelItem => item.Notes)
+            </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email.Email)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
