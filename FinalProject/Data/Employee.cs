@@ -19,11 +19,11 @@ public partial class Employee
 
     public string? Image { get; set; }
 
-    public DateOnly? Birthday { get; set; }
+    public DateTime? Birthday { get; set; }
 
     public string? Title { get; set; }
 
-    public DateOnly? JoinDate { get; set; }
+    public DateTime? JoinDate { get; set; }
 
     public string? Notes { get; set; }
 
