@@ -17,7 +17,7 @@ public partial class Member
 
     public string? Address { get; set; }
 
-    public DateOnly? Birthday { get; set; }
+    public DateTime? Birthday { get; set; }
 
     public int? Level { get; set; }
 
