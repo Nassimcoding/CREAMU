@@ -19,15 +19,17 @@ public partial class Employee
 
     public string? Image { get; set; }
 
-    public DateTime? Birthday { get; set; }
+    public DateOnly? Birthday { get; set; }
 
     public string? Title { get; set; }
 
-    public DateTime? JoinDate { get; set; }
+    public DateOnly? JoinDate { get; set; }
 
     public string? Notes { get; set; }
 
     public virtual Account? Email { get; set; }
+
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

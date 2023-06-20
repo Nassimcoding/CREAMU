@@ -31,6 +31,8 @@ public partial class CreamUdbContext : DbContext
 
     public virtual DbSet<Member> Members { get; set; }
 
+    public virtual DbSet<Message> Messages { get; set; }
+
     public virtual DbSet<Model> Models { get; set; }
 
     public virtual DbSet<News> News { get; set; }
@@ -153,7 +155,7 @@ public partial class CreamUdbContext : DbContext
             entity.Property(e => e.ComponentId)
                 .ValueGeneratedNever()
                 .HasColumnName("ComponentID");
-            entity.Property(e => e.ComFileName).HasMaxLength(20);
+            entity.Property(e => e.ComFileName).HasMaxLength(50);
             entity.Property(e => e.IsSupply).HasColumnName("isSupply");
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModelId).HasColumnName("ModelID");
@@ -256,7 +258,7 @@ public partial class CreamUdbContext : DbContext
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.IsSupply).HasColumnName("isSupply");
             entity.Property(e => e.MaterialName).HasMaxLength(20);
-            entity.Property(e => e.MtrlFileName).HasMaxLength(20);
+            entity.Property(e => e.MtrlFileName).HasMaxLength(50);
             entity.Property(e => e.UpdateTime).HasColumnType("datetime");
         });
 
@@ -297,6 +299,45 @@ public partial class CreamUdbContext : DbContext
                 .HasConstraintName("Members_ibfk_1");
         });
 
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.MessageId).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.EmployeeId, "EmployeeID");
+
+            entity.HasIndex(e => e.MemberId, "MemberID");
+
+            entity.Property(e => e.MessageId)
+                .ValueGeneratedNever()
+                .HasColumnName("MessageID");
+            entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+            entity.Property(e => e.Image)
+                .HasMaxLength(50)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.IsReply).HasColumnName("isReply");
+            entity.Property(e => e.IsShow).HasColumnName("isShow");
+            entity.Property(e => e.MemberId).HasColumnName("MemberID");
+            entity.Property(e => e.MessageContext)
+                .HasMaxLength(500)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.MessageTime).HasColumnType("datetime");
+            entity.Property(e => e.ReplyContext)
+                .HasMaxLength(500)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.ReplyTime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("Messages_ibfk_2");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("Messages_ibfk_1");
+        });
+
         modelBuilder.Entity<Model>(entity =>
         {
             entity.HasKey(e => e.ModelId).HasName("PRIMARY");
@@ -310,7 +351,7 @@ public partial class CreamUdbContext : DbContext
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.IsSupply).HasColumnName("isSupply");
-            entity.Property(e => e.ModelFileName).HasMaxLength(20);
+            entity.Property(e => e.ModelFileName).HasMaxLength(50);
             entity.Property(e => e.ModelName).HasMaxLength(20);
             entity.Property(e => e.ModelType).HasMaxLength(20);
             entity.Property(e => e.UpdateTime).HasColumnType("datetime");

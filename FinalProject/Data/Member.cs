@@ -17,7 +17,7 @@ public partial class Member
 
     public string? Address { get; set; }
 
-    public DateTime? Birthday { get; set; }
+    public DateOnly? Birthday { get; set; }
 
     public int? Level { get; set; }
 
@@ -30,6 +30,8 @@ public partial class Member
     public virtual ICollection<CreditcardInfo> CreditcardInfos { get; set; } = new List<CreditcardInfo>();
 
     public virtual Account? Email { get; set; }
+
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
