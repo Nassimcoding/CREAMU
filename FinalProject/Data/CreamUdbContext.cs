@@ -33,6 +33,8 @@ public partial class CreamUdbContext : DbContext
 
     public virtual DbSet<Model> Models { get; set; }
 
+    public virtual DbSet<News> News { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -74,16 +76,16 @@ public partial class CreamUdbContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Category");
+            entity.HasKey(e => e.CategoryId).HasName("PRIMARY");
+
+            entity.ToTable("Category");
 
             entity.HasIndex(e => e.CategoryId, "CategoryID").IsUnique();
 
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Category1)
                 .HasMaxLength(30)
                 .HasColumnName("Category");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
         });
 
         modelBuilder.Entity<CombineDetail>(entity =>
@@ -92,6 +94,18 @@ public partial class CreamUdbContext : DbContext
 
             entity.ToTable("CombineDetail");
 
+            entity.HasIndex(e => e.Cbody, "FK_CombineDetail_CBody_idx");
+
+            entity.HasIndex(e => e.Chead, "FK_CombineDetail_CHead_idx");
+
+            entity.HasIndex(e => e.Clfoot, "FK_CombineDetail_CLFoot_idx");
+
+            entity.HasIndex(e => e.Clhand, "FK_CombineDetail_CLHand_idx");
+
+            entity.HasIndex(e => e.Crfoot, "FK_CombineDetail_CRFoot_idx");
+
+            entity.HasIndex(e => e.Crhand, "FK_CombineDetail_CRHand_idx");
+
             entity.Property(e => e.CombineId).HasColumnName("CombineID");
             entity.Property(e => e.Cbody).HasColumnName("CBody");
             entity.Property(e => e.Chead).HasColumnName("CHead");
@@ -99,6 +113,31 @@ public partial class CreamUdbContext : DbContext
             entity.Property(e => e.Clhand).HasColumnName("CLHand");
             entity.Property(e => e.Crfoot).HasColumnName("CRFoot");
             entity.Property(e => e.Crhand).HasColumnName("CRHand");
+            entity.Property(e => e.Type).HasMaxLength(20);
+
+            entity.HasOne(d => d.CbodyNavigation).WithMany(p => p.CombineDetailCbodyNavigations)
+                .HasForeignKey(d => d.Cbody)
+                .HasConstraintName("FK_CombineDetail_CBody");
+
+            entity.HasOne(d => d.CheadNavigation).WithMany(p => p.CombineDetailCheadNavigations)
+                .HasForeignKey(d => d.Chead)
+                .HasConstraintName("FK_CombineDetail_CHead");
+
+            entity.HasOne(d => d.ClfootNavigation).WithMany(p => p.CombineDetailClfootNavigations)
+                .HasForeignKey(d => d.Clfoot)
+                .HasConstraintName("FK_CombineDetail_CLFoot");
+
+            entity.HasOne(d => d.ClhandNavigation).WithMany(p => p.CombineDetailClhandNavigations)
+                .HasForeignKey(d => d.Clhand)
+                .HasConstraintName("FK_CombineDetail_CLHand");
+
+            entity.HasOne(d => d.CrfootNavigation).WithMany(p => p.CombineDetailCrfootNavigations)
+                .HasForeignKey(d => d.Crfoot)
+                .HasConstraintName("FK_CombineDetail_CRFoot");
+
+            entity.HasOne(d => d.CrhandNavigation).WithMany(p => p.CombineDetailCrhandNavigations)
+                .HasForeignKey(d => d.Crhand)
+                .HasConstraintName("FK_CombineDetail_CRHand");
         });
 
         modelBuilder.Entity<Component>(entity =>
@@ -106,6 +145,10 @@ public partial class CreamUdbContext : DbContext
             entity.HasKey(e => e.ComponentId).HasName("PRIMARY");
 
             entity.ToTable("Component");
+
+            entity.HasIndex(e => e.MaterialId, "FK_Component_Material");
+
+            entity.HasIndex(e => e.ModelId, "FK_Component_Models");
 
             entity.Property(e => e.ComponentId)
                 .ValueGeneratedNever()
@@ -115,6 +158,16 @@ public partial class CreamUdbContext : DbContext
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModelId).HasColumnName("ModelID");
             entity.Property(e => e.ModelType).HasMaxLength(20);
+
+            entity.HasOne(d => d.Material).WithMany(p => p.Components)
+                .HasForeignKey(d => d.MaterialId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Component_Material");
+
+            entity.HasOne(d => d.Model).WithMany(p => p.Components)
+                .HasForeignKey(d => d.ModelId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Component_Models");
         });
 
         modelBuilder.Entity<CreditcardInfo>(entity =>
@@ -122,6 +175,8 @@ public partial class CreamUdbContext : DbContext
             entity.HasKey(e => e.CreditCardId).HasName("PRIMARY");
 
             entity.ToTable("CreditcardInfo");
+
+            entity.HasIndex(e => e.MemberId, "fk_CreditcardInfo_MemberID_to_MemberID");
 
             entity.Property(e => e.CreditCardId).HasColumnName("CreditCardID");
             entity.Property(e => e.CardNumber).HasMaxLength(50);
@@ -139,6 +194,10 @@ public partial class CreamUdbContext : DbContext
                 .HasMaxLength(200)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.CreditcardInfos)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("fk_CreditcardInfo_MemberID_to_MemberID");
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -154,7 +213,7 @@ public partial class CreamUdbContext : DbContext
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.EmailId).HasColumnName("EmailID");
             entity.Property(e => e.Image)
-                .HasMaxLength(30)
+                .HasMaxLength(100)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.Name)
@@ -214,7 +273,7 @@ public partial class CreamUdbContext : DbContext
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.EmailId).HasColumnName("EmailID");
             entity.Property(e => e.Image)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.JoinDate).HasColumnType("datetime");
@@ -257,11 +316,40 @@ public partial class CreamUdbContext : DbContext
             entity.Property(e => e.UpdateTime).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<News>(entity =>
+        {
+            entity.HasKey(e => e.NewsId).HasName("PRIMARY");
+
+            entity.Property(e => e.NewsId).HasColumnName("NewsID");
+            entity.Property(e => e.Image)
+                .HasMaxLength(50)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.Notes1)
+                .HasMaxLength(200)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.Notes2)
+                .HasMaxLength(200)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+            entity.Property(e => e.Title)
+                .HasMaxLength(200)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("PRIMARY");
 
             entity.ToTable("Order");
+
+            entity.HasIndex(e => e.EmployeeId, "fk_Order_EmployeeID_to_EmployeeID");
+
+            entity.HasIndex(e => e.MemberId, "fk_Order_MemberID_to_MemberID");
+
+            entity.HasIndex(e => e.ShippingAddressId, "fk_Order_ShippingAddressID_to_ShippingAddressID");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
@@ -280,6 +368,18 @@ public partial class CreamUdbContext : DbContext
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.ShippingAddressId).HasColumnName("ShippingAddressID");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("fk_Order_EmployeeID_to_EmployeeID");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("fk_Order_MemberID_to_MemberID");
+
+            entity.HasOne(d => d.ShippingAddress).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.ShippingAddressId)
+                .HasConstraintName("fk_Order_ShippingAddressID_to_ShippingAddressID");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -287,6 +387,10 @@ public partial class CreamUdbContext : DbContext
             entity.HasKey(e => e.OrderDetailId).HasName("PRIMARY");
 
             entity.ToTable("OrderDetail");
+
+            entity.HasIndex(e => e.OrderId, "fk_OrderDetail_OrderID_to_OrderID");
+
+            entity.HasIndex(e => e.ProductId, "fk_OrderDetail_ProductID_to_ProductID");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.Notes)
@@ -296,6 +400,11 @@ public partial class CreamUdbContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.Qty).HasColumnName("QTY");
+            entity.Property(e => e.Type).HasMaxLength(20);
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("fk_OrderDetail_OrderID_to_OrderID");
         });
 
         modelBuilder.Entity<Orderimg>(entity =>
@@ -303,6 +412,8 @@ public partial class CreamUdbContext : DbContext
             entity.HasKey(e => e.ImgId).HasName("PRIMARY");
 
             entity.ToTable("Orderimg");
+
+            entity.HasIndex(e => e.OrderId, "fk_Orderimg_OrderID_to_OrderID");
 
             entity.Property(e => e.ImgId).HasColumnName("ImgID");
             entity.Property(e => e.FPath)
@@ -313,6 +424,10 @@ public partial class CreamUdbContext : DbContext
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Orderimgs)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("fk_Orderimg_OrderID_to_OrderID");
         });
 
         modelBuilder.Entity<PostAddress>(entity =>
@@ -320,6 +435,8 @@ public partial class CreamUdbContext : DbContext
             entity.HasKey(e => e.AddressId).HasName("PRIMARY");
 
             entity.ToTable("PostAddress");
+
+            entity.HasIndex(e => e.MemberId, "fk_PostAddress_MemberID_to_MemberID");
 
             entity.Property(e => e.AddressId).HasColumnName("AddressID");
             entity.Property(e => e.Address)
@@ -347,6 +464,10 @@ public partial class CreamUdbContext : DbContext
                 .HasMaxLength(50)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.PostAddresses)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("fk_PostAddress_MemberID_to_MemberID");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -355,9 +476,9 @@ public partial class CreamUdbContext : DbContext
 
             entity.ToTable("Product");
 
-            entity.Property(e => e.ProductId)
-                .ValueGeneratedNever()
-                .HasColumnName("ProductID");
+            entity.HasIndex(e => e.CategoryId, "fk_product_category");
+
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Descript)
                 .HasMaxLength(500)
@@ -379,10 +500,15 @@ public partial class CreamUdbContext : DbContext
                 .HasMaxLength(30)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
+            entity.Property(e => e.Type).HasMaxLength(20);
             entity.Property(e => e.UpdatedDate)
                 .HasMaxLength(30)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("fk_product_category");
         });
 
         modelBuilder.Entity<TempOrderDetail>(entity =>
@@ -391,7 +517,13 @@ public partial class CreamUdbContext : DbContext
 
             entity.ToTable("TempOrderDetail");
 
-            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+            entity.HasIndex(e => e.MemberId, "fk_TempOrderDetail_MemberID_to_MemberID");
+
+            entity.HasIndex(e => e.ProductId, "fk_TempOrderDetail_ProductID_to_ProductID");
+
+            entity.Property(e => e.OrderDetailId)
+                .ValueGeneratedNever()
+                .HasColumnName("OrderDetailID");
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
             entity.Property(e => e.Notes)
                 .HasMaxLength(200)
@@ -399,6 +531,14 @@ public partial class CreamUdbContext : DbContext
                 .HasCharSet("utf8mb3");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.Qty).HasColumnName("QTY");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.TempOrderDetails)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("fk_TempOrderDetail_MemberID_to_MemberID");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.TempOrderDetails)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("fk_TempOrderDetail_ProductID_to_ProductID");
         });
 
         modelBuilder.Entity<TrackingList>(entity =>
@@ -409,9 +549,21 @@ public partial class CreamUdbContext : DbContext
 
             entity.ToTable("TrackingList");
 
+            entity.HasIndex(e => e.ProductId, "fk_tracking_product");
+
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.TrackingDate).HasMaxLength(30);
+
+            entity.HasOne(d => d.Member).WithMany(p => p.TrackingLists)
+                .HasForeignKey(d => d.MemberId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_tracking_member");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.TrackingLists)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_tracking_product");
         });
 
         OnModelCreatingPartial(modelBuilder);

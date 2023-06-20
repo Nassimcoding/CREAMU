@@ -17,7 +17,7 @@ public partial class Member
 
     public string? Address { get; set; }
 
-    public DateTime? Birthday { get; set; }
+    public DateOnly? Birthday { get; set; }
 
     public int? Level { get; set; }
 
@@ -27,5 +27,15 @@ public partial class Member
 
     public string? Notes { get; set; }
 
+    public virtual ICollection<CreditcardInfo> CreditcardInfos { get; set; } = new List<CreditcardInfo>();
+
     public virtual Account? Email { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<PostAddress> PostAddresses { get; set; } = new List<PostAddress>();
+
+    public virtual ICollection<TempOrderDetail> TempOrderDetails { get; set; } = new List<TempOrderDetail>();
+
+    public virtual ICollection<TrackingList> TrackingLists { get; set; } = new List<TrackingList>();
 }

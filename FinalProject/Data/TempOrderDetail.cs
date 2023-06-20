@@ -20,4 +20,8 @@ public partial class TempOrderDetail
     public int? Subtotal { get; set; }
 
     public string? Notes { get; set; }
+
+    public virtual Member? Member { get; set; }
+
+    public virtual Product? Product { get; set; }
 }

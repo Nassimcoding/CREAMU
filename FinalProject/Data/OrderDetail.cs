@@ -20,4 +20,8 @@ public partial class OrderDetail
     public int? Subtotal { get; set; }
 
     public string? Notes { get; set; }
+
+    public string? Type { get; set; }
+
+    public virtual Order? Order { get; set; }
 }

@@ -24,4 +24,6 @@ public partial class CreditcardInfo
     public DateOnly? CreatedDate { get; set; }
 
     public string? Notes { get; set; }
+
+    public virtual Member? Member { get; set; }
 }

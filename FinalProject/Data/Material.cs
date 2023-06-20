@@ -22,4 +22,6 @@ public partial class Material
     public bool IsSupply { get; set; }
 
     public string? MtrlFileName { get; set; }
+
+    public virtual ICollection<Component> Components { get; set; } = new List<Component>();
 }

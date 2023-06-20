@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace FinalProject.Data;
 
@@ -20,17 +19,15 @@ public partial class Employee
 
     public string? Image { get; set; }
 
-    [Display(Name = "Birthday")]
-    [DataType(DataType.Date)]
-    
-    public DateTime? Birthday { get; set; }
+    public DateOnly? Birthday { get; set; }
 
     public string? Title { get; set; }
 
-    [DataType(DataType.Date)]
-    public DateTime? JoinDate { get; set; }
+    public DateOnly? JoinDate { get; set; }
 
     public string? Notes { get; set; }
 
     public virtual Account? Email { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

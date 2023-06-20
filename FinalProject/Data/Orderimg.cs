@@ -12,4 +12,6 @@ public partial class Orderimg
     public string? FPath { get; set; }
 
     public string? Notes { get; set; }
+
+    public virtual Order? Order { get; set; }
 }
