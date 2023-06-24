@@ -9,7 +9,7 @@ public partial class News
 
     public string? Title { get; set; }
 
-    public DateOnly? Date { get; set; }
+    public DateTime? Date { get; set; }
 
     public string? Image { get; set; }
 
