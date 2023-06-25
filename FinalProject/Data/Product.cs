@@ -24,4 +24,12 @@ public partial class Product
     public string? ReleaseDate { get; set; }
 
     public string? UpdatedDate { get; set; }
+
+    public string? Type { get; set; }
+
+    public virtual Category? Category { get; set; }
+
+    public virtual ICollection<TempOrderDetail> TempOrderDetails { get; set; } = new List<TempOrderDetail>();
+
+    public virtual ICollection<TrackingList> TrackingLists { get; set; } = new List<TrackingList>();
 }

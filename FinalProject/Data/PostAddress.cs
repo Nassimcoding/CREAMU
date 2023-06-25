@@ -26,4 +26,8 @@ public partial class PostAddress
     public ulong? IsDefault { get; set; }
 
     public string? Notes { get; set; }
+
+    public virtual Member? Member { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

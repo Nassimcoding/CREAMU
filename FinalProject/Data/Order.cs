@@ -22,4 +22,14 @@ public partial class Order
     public int? ShippingAddressId { get; set; }
 
     public string? OrderNotes { get; set; }
+
+    public virtual Employee? Employee { get; set; }
+
+    public virtual Member? Member { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual ICollection<Orderimg> Orderimgs { get; set; } = new List<Orderimg>();
+
+    public virtual PostAddress? ShippingAddress { get; set; }
 }

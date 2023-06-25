@@ -24,4 +24,6 @@ public partial class Model
     public bool IsSupply { get; set; }
 
     public string? ModelFileName { get; set; }
+
+    public virtual ICollection<Component> Components { get; set; } = new List<Component>();
 }

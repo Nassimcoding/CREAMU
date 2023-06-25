@@ -10,6 +10,9 @@ using FinalProject.ViewModel;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.IO;
+using Microsoft.CodeAnalysis.FlowAnalysis;
+using NuGet.Packaging.Signing;
+using System.Collections.Immutable;
 //using AspNetCore;
 
 namespace FinalProject.Controllers
@@ -40,31 +43,90 @@ namespace FinalProject.Controllers
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
 
             IEnumerable<Employee> datas = null;
+
+            //假如搜尋有值
             if (string.IsNullOrEmpty(keyword))
             {
-                // 如果沒有搜尋關鍵字，則返回所有的資料
-                datas = from p in _context.Employees
-                        select p;
+                //假如時間無值
+                if (key.StarYear == 0 && key.EndYear == 0)
+                {
+                    //如果沒有搜尋關鍵字，則返回所有的資料
+                    datas = from p in _context.Employees
+                            select p;
 
-                // 取得當前頁的資料，並按照 EmployeeId 升序排序
-                var pagedData = data.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
+                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+                    totalCount = datas.Count(); // 總資料數量
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
 
-                ViewBag.TotalPages = totalPages;
-                ViewBag.CurrentPage = pageNumber;
+                    return View(pagedData);
+                }
+                //時間有值
+                else
+                {
+                    datas = from p in _context.Employees.
+                            Where(p => p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear ||
+                                       p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear)
+                            select p ;
 
-                return View(pagedData);
+                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
+                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+
+                    totalCount = datas.Count(); // 總資料數量
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+
+                    return View(pagedData);
+                }
             }
-            else
+            else //搜尋無值
             {
-                // 如果有搜尋關鍵字，則根據關鍵字進行搜尋
-                datas = _context.Employees.Where(p => p.Name.Contains(keyword) ||
-                                                     p.Telephone.Contains(keyword) ||
-                                                     p.Email.Email.Contains(keyword) ||
-                                                     p.Address.Contains(keyword) ||
-                                                     p.Title.Contains(keyword));
+                //時間無值
+                if (key.StarYear == 0 && key.EndYear == 0)
+                {
+                    // 如果有搜尋關鍵字，則根據關鍵字進行搜尋
+                    datas = _context.Employees.Where(p => p.Name.Contains(keyword) ||
+                                                         p.Telephone.Contains(keyword) ||
+                                                         p.Email.Email.Contains(keyword) ||
+                                                         p.Address.Contains(keyword) ||
+                                                         p.Title.Contains(keyword));
+
+                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
+                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+                    totalCount = datas.Count(); // 總資料數量
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+                    return View(pagedData);
+                }
+                //時間有值
+                else
+                {
+                    // 如果有搜尋關鍵字，則根據關鍵字進行搜尋
+                    datas = _context.Employees.
+                        Where(p =>
+                        (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
+                        (p.Telephone.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
+                        (p.Email.Email.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
+                        (p.Address.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
+                        (p.Title.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+
+                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
+                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+
+                    totalCount = datas.Count(); // 總資料數量
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
 
 
-                return View(datas);
+                    return View(pagedData);
+                }
             }
         }
 
@@ -103,18 +165,24 @@ namespace FinalProject.Controllers
         {
             Employee Newcreate = new Employee();
             Account account = new Account();
+           
             if (ModelState.IsValid)
             {
-                
+
                 if (IsAccountsDuplicate(EmployeesViewModel.Email))
                 {
                     ModelState.AddModelError("Email", "帳號已存在。");
                     return View(EmployeesViewModel);
                 }
-
-                string path = _images.WebRootPath + "/imgs/" + Guid.NewGuid().ToString() + ".jpg";
+                string path = _images.WebRootPath + "/imgs/";
 
                 NewCreate(EmployeesViewModel, Newcreate, account, path, photo);
+
+                if (photo != null && Newcreate.Image == null)
+                {
+                    ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                    return View(EmployeesViewModel);
+                }
                 // 取得最新創建的帳號
                 var newCreate = _context.Accounts
                     .OrderByDescending(e => e.EmailId)  // 以 CreatedDate 欄位降序排序
@@ -132,9 +200,10 @@ namespace FinalProject.Controllers
             return View(EmployeesViewModel);
         }
 
+        // 在這裡進行檢查帳號是否已存在的邏輯
         private bool IsAccountsDuplicate(object accounts)
         {
-            // 在這裡進行檢查帳號是否已存在的邏輯
+           
             // 可以使用資料庫查詢或其他方式來檢查重複性
             // 如果帳號已存在，則回傳 true，否則回傳 false
 
@@ -143,9 +212,11 @@ namespace FinalProject.Controllers
             return existingEmployee != null;
         }
 
+        // 新建資料的格式
         private void NewCreate(EmployeesViewModel employee, Employee Newcreate, Account account, string path, IFormFile photo)
-            {
-
+        {
+            var filename = FileName(path, photo);
+            Newcreate.Image = filename;
             Newcreate.JoinDate = DateTime.Now;
             Newcreate.Name = employee.Name;
             Newcreate.Address = employee.Address;
@@ -154,28 +225,41 @@ namespace FinalProject.Controllers
             Newcreate.Birthday = employee.Birthday;
             Newcreate.Title = employee.Title;
             Newcreate.Password = employee.Password;
-            if (photo != null)
-            {
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    photo.CopyTo(fileStream);
-                }
-                Newcreate.Image = Path.GetFileName(path);
-            }
-            else
-            {
-                Newcreate.Image = null;
-            }
-
-
-            account.Email = employee.Email;
-            _context.Add(account);
-
-           
-
-
-
+            
+            account.Email = employee.Email; // 因須先有帳號才會建立成功
+            _context.Add(account); // 先把帳號加入
         }
+
+        // 儲存照片的方法
+        private string FileName(string path, IFormFile photo)
+        {
+            if (photo == null || string.IsNullOrEmpty(photo.ContentType) || string.IsNullOrEmpty(photo.FileName))
+                return null;
+
+            var extension = Path.GetExtension(photo.FileName); // 取得副檔名
+            string[] allowExts = { ".jpg", ".jpeg", ".png", ".gif", ".tif", ".bmp" };
+            if (!allowExts.Contains(extension))
+            {               
+                return null;
+            }
+
+            // 產生新的檔案名稱，使用 Guid 來確保唯一性，並加上原始檔案的副檔名
+            var newFileName = Guid.NewGuid().ToString("N") + extension;
+
+            // 組合完整的檔案路徑
+            var fullName = Path.Combine(path, newFileName);
+
+            // 使用 FileStream 創建檔案流，以創建模式開啟或創建檔案
+            using (var fileStream = new FileStream(fullName, FileMode.Create))
+            {
+                // 將照片的內容複製到檔案流中，進行儲存
+                photo.CopyTo(fileStream);
+            }
+
+            // 返回新的檔案名稱
+            return newFileName;
+        }
+
 
         // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -220,13 +304,19 @@ namespace FinalProject.Controllers
                         return NotFound();
                     }
 
+                   
 
-                    string path = _images.WebRootPath + "/imgs/" + Guid.NewGuid().ToString() + ".jpg";
+                    string path = _images.WebRootPath + "/imgs/";
 
 
                     // 呼叫 NewEdit 方法以編輯現有的員工資料
                     NewEdit(employee, existingEmployee, path, photo);
 
+                    if (photo != null && existingEmployee.Image == null)
+                    {
+                        ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                        return View(employee);
+                    }
                     // 更新 Employee
                     _context.Update(existingEmployee);
 
@@ -254,10 +344,11 @@ namespace FinalProject.Controllers
         }
 
         // NewEdit 方法用於更新現有員工的屬性
-        private static void NewEdit(Employee employee, Employee existingEmployee, string path, IFormFile photo)
+        private  void NewEdit(Employee employee, Employee existingEmployee, string path, IFormFile photo)
         {
 
-
+            var filename = FileName(path, photo);
+            existingEmployee.Image = filename;
             existingEmployee.Name = employee.Name;
             existingEmployee.Telephone = employee.Telephone;
             existingEmployee.Password = employee.Password;
@@ -265,19 +356,8 @@ namespace FinalProject.Controllers
             existingEmployee.Birthday = employee.Birthday;
             existingEmployee.JoinDate = employee.JoinDate;
             existingEmployee.Notes = employee.Notes;
-            
-            if (photo != null )
-            {
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    photo.CopyTo(fileStream);
-                }
-                existingEmployee.Image = Path.GetFileName(path);
-            }
-            else
-            {
-                existingEmployee.Image = null;
-            }
+
+           
         }
 
         // GET: Employees/Delete/5

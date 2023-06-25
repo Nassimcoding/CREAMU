@@ -19,11 +19,12 @@ namespace FinalProject.ViewModel
         [Display(Name = "密碼")]
         [Required(ErrorMessage = "請輸入密碼!")]
         [StringLength(20, MinimumLength = 8, ErrorMessage = "請輸入8~20位數的密碼 !")]
+        [RegularExpression(@"^[a-zA-Z0-9!@#$%^&*]+$", ErrorMessage = "密碼只能包含字母、數字和特殊字符 !")]
         public string? Password { get; set; }
 
         [Display(Name = "再次確認密碼")]
         [Required(ErrorMessage = "請再次輸入密碼!")]
-        [Compare("Password", ErrorMessage = "密碼不符合 !")]
+        [Compare("Password", ErrorMessage = "密碼不符合 !")]        
         public string? CheckPassword { get; set; }
 
         public int? EmailId { get; set; }
