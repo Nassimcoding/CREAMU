@@ -1,4 +1,4 @@
-﻿@model FinalProject.Data.Member
+﻿@model FinalProject.ViewModel.MembersViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -7,13 +7,12 @@
 <br />
 <br />
 <br />
-<h1>Create</h1>
-
-<h4>Member</h4>
+<h1 class="d-flex justify-content-center display-1">Create</h1>
+<h4 class="d-flex justify-content-center display-5">Member</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12 d-flex justify-content-center">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -31,8 +30,9 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmailId" class="control-label"></label>
-                <select asp-for="EmailId" class ="form-control" asp-items="ViewBag.EmailId"></select>
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
@@ -50,13 +50,8 @@
                 <span asp-validation-for="Level" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="JoinDate" class="control-label"></label>
-                <input asp-for="JoinDate" class="form-control" />
-                <span asp-validation-for="JoinDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
+                <label asp-for="Image" class="form-label">照片</label>
+                <input class="form-control" type="file" name="photo">
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -64,17 +59,13 @@
                 <input asp-for="Notes" class="form-control" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mt-4">
+                <input type="submit" value="Create" class="btn btn-primary btn btn-primary mx-5" />|
+                <a asp-action="Index" type="button" class="btn btn-light btn btn-primary mx-3">Back to List</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

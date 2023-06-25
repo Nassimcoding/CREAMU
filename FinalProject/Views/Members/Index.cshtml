@@ -7,54 +7,75 @@
 <br />
 <br />
 <br />
+
+@using (Html.BeginForm()){
 <div class="container">
     <div class="row">
-        @* <div class="col-6 text-start px-4">
-        <a asp-action="Create" type="button" class="btn btn-outline-secondary">Create New</a>
-        </div>*@
-        <div class="col-7 text-end px-0">
-            @using (Html.BeginForm())
-            {
-                <p>
-                    關鍵字 @Html.TextBox("textkey") <input type="submit" value="查詢">
+            <div class="col-6 text-end">
+                <select class="form-select" aria-label="Default select example" name="StarYear">
+                    <option selected" value="0">開始時間</option>
+                    @{
+                        var staryear = DateTime.Now.Year;
+                        @for (int i = 1970; i <= staryear; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-6 text-end">
+                <select class="form-select" aria-label="Default select example" name="EndYear">
+                    <option selected value="0">結束時間</option>
+                    @{
+                        var endyear = DateTime.Now.Year;
+                        @for (int i = 1970; i <= endyear; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </div>
+            @*<div class="col-4 text-start px-4 pt-3">
+                <a asp-action="Create" type="button" class="btn btn-outline-secondary">Create New</a>
+            </div>*@
+            <div class="col-8 text-end px-4 pt-3">
+                <p class="text-right">
+                    關鍵字 @Html.TextBox("textkey")  <input type="submit" value="查詢"  class="px-1"/>
                 </p>
-            }
-        </div>
+            </div>
     </div>
 </div>
-<p>
+}
 
-
-</p>
 <table class="table">
-    <thead>
-        <tr>
-            <th class="">
+    <thead >
+        <tr >
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Image)
             </th>
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
+            </th >
+            <th class ="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Telephone)
             </th>
 
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Address)
             </th>
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Birthday)
             </th>
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Level)
             </th>
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.JoinDate)
             </th>
             @*<th>
             @Html.DisplayNameFor(model => model.Notes)
             </th>*@
-            <th>
+            <th class="text-center align-middle">
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th></th>
@@ -67,9 +88,9 @@
 
                 var birthday = Convert.ToDateTime(item.Birthday).ToString("yyyy/MM/dd");
                 var JoinDate = Convert.ToDateTime(item.JoinDate).ToString("yyyy/MM/dd");
-                <tr>
+                <tr class="text-center align-middle">
                     <td>
-                        <img src="~/imgs/@item.Image">
+                        <img src="~/imgs/@item.Image" width="100px" height="150px">
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
@@ -97,11 +118,28 @@
                         @Html.DisplayFor(modelItem => item.Email.Email)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.MemberId">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.MemberId"> <button type="button" class="btn btn-primary">修改</button></a> 
+                        <a asp-action="Delete" asp-route-id="@item.MemberId">
+                            <button type="button" class="btn btn-danger">
+                                刪除
+                            </button>
+                        </a>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
+<!-- 用於分頁的導航列 -->
+
+<nav aria-label="Page navigation" class="d-flex float-end mt-3">
+    <ul class="pagination">
+        <!-- 使用for迴圈建立分頁按鈕 -->
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "Index")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Data;
 using System.Data;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using FinalProject.ViewModel;
+using System.IO;
 
 namespace FinalProject.Controllers
 {
@@ -22,34 +25,95 @@ namespace FinalProject.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index(key key)
+        public async Task<IActionResult> Index(int? page, key key)
         {
             string keyword = key.textkey;
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
 
+            // 從資料庫中獲取資料並包含相關的 Email 資料
+            var data = await _context.Members.Include(e => e.Email).ToListAsync();
 
-
+            int totalCount;
+            int totalPages;
+            IQueryable<Member> datas;
 
             if (string.IsNullOrEmpty(keyword))
             {
-                var data = from p in _context.Members.Include(m => m.Email)
-                           select p;
-                keyword = null;
-                return View(await data.ToListAsync());
+                if (key.StarYear == 0 && key.EndYear == 0)
+                {
+                    datas = _context.Members;
 
+                    var pagedData = await datas.OrderBy(e => e.MemberId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+                    return View(pagedData);
+                }
+                else
+                {
+                    datas = _context.Members.Where(p => (p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+
+                    var pagedData = await datas.OrderBy(e => e.MemberId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+                    return View(pagedData);
+                }
             }
             else
             {
-                var data = _context.Members.Include(m => m.Email).Where
-              (p => p.Name.Contains(keyword) ||
-               p.Telephone.Contains(keyword) ||
-               p.Address.Contains(keyword) ||
-               p.Email.Email.Contains(keyword));
+                if (key.StarYear == 0 && key.EndYear == 0)
+                {
+                    datas = _context.Members.Where(p => p.Name.Contains(keyword) ||
+                                                         p.Telephone.Contains(keyword) ||
+                                                         p.Email.Email.Contains(keyword) ||
+                                                         p.Address.Contains(keyword)
+                                                        );
 
-                return View(await data.ToListAsync());
+                    var pagedData = await datas.OrderBy(e => e.MemberId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+                    return View(pagedData);
+                }
+                else
+                {
+                    datas = _context.Members.Where(p => (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+
+                    var pagedData = await datas.OrderBy(e => e.MemberId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    ViewBag.TotalPages = totalPages;
+                    ViewBag.CurrentPage = pageNumber;
+
+                    return View(pagedData);
+                }
             }
-
-
-            //return View(await creamUdbContext.ToListAsync());
         }
 
         // GET: Members/Details/5
@@ -72,27 +136,48 @@ namespace FinalProject.Controllers
         }
 
         // GET: Members/Create
-        public IActionResult Create()
+ 
+
+      
+       
+
+        private string FileName(string path, IFormFile photo)
         {
-            ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId");
-            return View();
+            if (photo == null || string.IsNullOrEmpty(photo.ContentType) || string.IsNullOrEmpty(photo.FileName))
+                return null;
+
+            var extension = Path.GetExtension(photo.FileName); // 取得副檔名
+            string[] allowExts = { ".jpg", ".jpeg", ".png", ".gif", ".tif", ".bmp" };
+            if (!allowExts.Contains(extension))
+            {
+                return null;
+            }
+
+            // 產生新的檔案名稱，使用 Guid 來確保唯一性，並加上原始檔案的副檔名
+            var newFileName = Guid.NewGuid().ToString("N") + extension;
+
+            // 組合完整的檔案路徑
+            var fullName = Path.Combine(path, newFileName);
+
+            // 使用 FileStream 創建檔案流，以創建模式開啟或創建檔案
+            using (var fileStream = new FileStream(fullName, FileMode.Create))
+            {
+                // 將照片的內容複製到檔案流中，進行儲存
+                photo.CopyTo(fileStream);
+            }
+
+            // 返回新的檔案名稱
+            return newFileName;
         }
 
-        // POST: Members/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MemberId,Name,Telephone,Password,EmailId,Address,Birthday,Level,JoinDate,Image,Notes")] Member member)
+        private async Task<bool> IsAccountsDuplicateAsync(string accounts)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(member);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
-            return View(member);
+            // 可以使用資料庫查詢或其他方式來檢查重複性
+            // 如果帳號已存在，則回傳 true，否則回傳 false
+
+            // 示例：假設使用 Entity Framework Core
+            var existingMembers =  await _context.Accounts.FirstOrDefaultAsync(e => e.Email == accounts);
+            return existingMembers != null;
         }
 
         // GET: Members/Edit/5
@@ -108,6 +193,7 @@ namespace FinalProject.Controllers
             {
                 return NotFound();
             }
+            var account = await _context.Accounts.ToListAsync();
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
             return View(member);
         }
@@ -117,18 +203,51 @@ namespace FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MemberId,Name,Telephone,Password,EmailId,Address,Birthday,Level,JoinDate,Image,Notes")] Member member)
+        public async Task<IActionResult> Edit(int id,Member member, IFormFile photo)
         {
+            var accounts = await _context.Accounts.OrderBy(e => e.EmailId).ToListAsync();
+            var members = await _context.Members.ToListAsync();
+            // 查詢指定 id 的員工資料，並包含相關的 Email 資料
+            var existingMember = await _context.Members
+                                    .Include(e => e.Email) // 找到員工內的 EmailID 對應帳號 EmailID 的資料
+                                    .FirstOrDefaultAsync(e => e.MemberId == id); // 第一個找到的值
+            
+
             if (id != member.MemberId)
             {
                 return NotFound();
             }
 
+            if (photo == null || photo.Length == 0)
+            {
+                ModelState.Remove("photo");
+            }
+
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(member);
+                    
+
+                    string path = _images.WebRootPath + "/imgs/";
+
+
+                    // 呼叫 NewEdit 方法以編輯現有的員工資料
+                    NewEdit(member, photo, existingMember, path);
+
+                    //if (photo != null && existingMember.Image == null)
+                    //{
+                    //    ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                    //    return View(member);
+                    //}
+                    
+                    _context.Update(existingMember);
+
+                    // 更新 Account
+                    existingMember.Email.Email = member.Email.Email;
+                    _context.Update(existingMember.Email);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -144,8 +263,24 @@ namespace FinalProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
             return View(member);
+        }
+
+        private void NewEdit(Member member, IFormFile photo, Member? existingMember, string path)
+        {
+            var filename = FileName(path, photo);
+            existingMember.Image = (photo == null && existingMember.Image != null)? existingMember.Image : filename;
+            existingMember.Name = member.Name;
+            existingMember.Telephone = member.Telephone;
+            existingMember.Password = member.Password;
+            existingMember.Address = member.Address;
+            existingMember.Birthday = member.Birthday;
+            existingMember.JoinDate = member.JoinDate;
+            existingMember.Notes = member.Notes;
+            existingMember.Level = member.Level;
         }
 
         // GET: Members/Delete/5

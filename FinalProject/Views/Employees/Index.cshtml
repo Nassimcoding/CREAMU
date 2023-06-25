@@ -49,6 +49,8 @@
 </div>
 }
 <div class="container">
+      
+
     <div class="row">
         
 @{  
@@ -60,13 +62,13 @@
         var Birthday = Convert.ToDateTime(item.Birthday).ToString("yyyy/MM/dd");
 
                 <div class="d-flex card col-4">
-                    <img src="~/imgs/@item.Image" width="500px" ;center,top" class="card-img-top mt-2" alt="...">
+                    <img src="~/imgs/@item.Image" ;center,top" class="card-img-top mt-2" alt="...">
             <div class="card-body">
                 <h5 class="card-title">@Html.DisplayNameFor(model => model.Name) : @Html.DisplayFor(modelItem => item.Name)</h5>
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">@Html.DisplayNameFor(model => model.Telephone) : @Html.DisplayFor(modelItem => item.Telephone)</li>
-                <li class="list-group-item">@Html.DisplayNameFor(model => model.Email) : @Html.DisplayFor(modelItem => item.Email.Email)</li>
+                <li class="list-group-item">@Html.DisplayNameFor(model => model.Email.Email) : @Html.DisplayFor(modelItem => item.Email.Email)</li>
                 <li class="list-group-item">@Html.DisplayNameFor(model => model.Birthday) : @Birthday</li>
                 <li class="list-group-item">@Html.DisplayNameFor(model => model.Address) : @Html.DisplayFor(modelItem => item.Address)</li>
                 <li class="list-group-item">@Html.DisplayNameFor(model => model.JoinDate) : @JoinDate</li>
@@ -94,7 +96,7 @@
 
 
 <!-- 用於分頁的導航列 -->
-
+       
         <nav aria-label="Page navigation" class="d-flex justify-content-center mt-3">
         <ul class="pagination">
             <!-- 使用for迴圈建立分頁按鈕 -->

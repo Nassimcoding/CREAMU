@@ -7,9 +7,9 @@
 <br />
 <br />
 <br />
-<h1>Delete</h1>
+<h1 class="display-1">Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3 class="p-3 mb-2 bg-danger text-white">Are you sure you want to delete this?</h3>
 <div>
     <h4>Member</h4>
     <hr />
@@ -77,8 +77,8 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="MemberId" />
+        <input type="hidden" asp-for="EmployeeId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" type="button" class="btn btn-light">Back to List</a>
     </form>
 </div>

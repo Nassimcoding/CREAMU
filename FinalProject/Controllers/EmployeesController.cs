@@ -31,99 +31,89 @@ namespace FinalProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index(int? page, key key)
         {
-            // 取得搜尋關鍵字
             string keyword = key.textkey;
-            int pageSize = 6; // 每頁顯示的資料數量
-            int pageNumber = page ?? 1; // 當前頁數，如果為空則默認為第1頁
+            int pageSize = 6;
+            int pageNumber = page ?? 1;
 
             // 從資料庫中獲取資料並包含相關的 Email 資料
             var data = await _context.Employees.Include(e => e.Email).ToListAsync();
 
-            var totalCount = data.Count(); // 總資料數量
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+            int totalCount;
+            int totalPages;
+            IQueryable<Employee> datas;
 
-            IEnumerable<Employee> datas = null;
-
-            //假如搜尋有值
             if (string.IsNullOrEmpty(keyword))
             {
-                //假如時間無值
                 if (key.StarYear == 0 && key.EndYear == 0)
                 {
-                    //如果沒有搜尋關鍵字，則返回所有的資料
-                    datas = from p in _context.Employees
-                            select p;
+                    datas = _context.Employees;
 
-                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
-                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
-                    totalCount = datas.Count(); // 總資料數量
-                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    var pagedData = await datas.OrderBy(e => e.EmployeeId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
 
                     return View(pagedData);
                 }
-                //時間有值
                 else
                 {
-                    datas = from p in _context.Employees.
-                            Where(p => p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear ||
-                                       p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear)
-                            select p ;
+                    datas = _context.Employees.Where(p => (p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
 
-                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
-                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+                    var pagedData = await datas.OrderBy(e => e.EmployeeId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
 
-                    totalCount = datas.Count(); // 總資料數量
-                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
-
 
                     return View(pagedData);
                 }
             }
-            else //搜尋無值
+            else
             {
-                //時間無值
                 if (key.StarYear == 0 && key.EndYear == 0)
                 {
-                    // 如果有搜尋關鍵字，則根據關鍵字進行搜尋
                     datas = _context.Employees.Where(p => p.Name.Contains(keyword) ||
                                                          p.Telephone.Contains(keyword) ||
                                                          p.Email.Email.Contains(keyword) ||
                                                          p.Address.Contains(keyword) ||
                                                          p.Title.Contains(keyword));
 
-                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
-                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
-                    totalCount = datas.Count(); // 總資料數量
-                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    var pagedData = await datas.OrderBy(e => e.EmployeeId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
+
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
 
                     return View(pagedData);
                 }
-                //時間有值
                 else
                 {
-                    // 如果有搜尋關鍵字，則根據關鍵字進行搜尋
-                    datas = _context.Employees.
-                        Where(p =>
-                        (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
-                        (p.Telephone.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
-                        (p.Email.Email.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
-                        (p.Address.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) ||
-                        (p.Title.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear || p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+                    datas = _context.Employees.Where(p => (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
 
-                    // 取得當前頁的資料，並按照 EmployeeId 升序排序
-                    var pagedData = datas.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy(e => e.EmployeeId).ToList();
+                    var pagedData = await datas.OrderBy(e => e.EmployeeId)
+                                               .Skip((pageNumber - 1) * pageSize)
+                                               .Take(pageSize)
+                                               .ToListAsync();
 
-                    totalCount = datas.Count(); // 總資料數量
-                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize); // 總頁數
+                    totalCount = await datas.CountAsync();
+                    totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
-
 
                     return View(pagedData);
                 }
