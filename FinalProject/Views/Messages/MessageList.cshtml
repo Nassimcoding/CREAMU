@@ -1,0 +1,95 @@
+﻿@model IEnumerable<FinalProject.Data.Message>
+
+@{
+    ViewData["Title"] = "MessageList";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<h1>Message</h1>
+
+<p>
+    <a asp-action="AddNewMessage">Add New Message</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MessageTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReplyTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MessageContext)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReplyContext)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsReply)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsShow)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessageTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReplyTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessageContext)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReplyContext)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsReply)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsShow)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Image)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.EmployeeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Member.MemberId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MessageId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MessageId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MessageId">Delete</a>
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
