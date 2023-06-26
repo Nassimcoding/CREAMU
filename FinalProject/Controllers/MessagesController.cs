@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Data;
+using FinalProject.ViewModel;
 
 namespace FinalProject.Controllers
 {
@@ -19,10 +20,21 @@ namespace FinalProject.Controllers
         }
 
         // GET: Messages
-        public async Task<IActionResult> MessageList()
+        public async Task<IActionResult> MessageList(CMessageKeywordViewModel vm)
         {
-            var creamUdbContext = _context.Messages.Include(m => m.Employee).Include(m => m.Member);
-            return View(await creamUdbContext.ToListAsync());
+            string keyword = vm.txtKeyword;//輸入的關鍵字
+            var creamUdbContext = _context.Messages.Include(m => m.Employee).Include(m => m.Member);//透過此方法可以同時附加Empolyee和Member的資料，以便於查詢
+            IEnumerable<Message> datas = null;
+
+            if (string.IsNullOrEmpty(keyword))//如果是null值
+            {
+                //就把所有資料都顯示出來
+                datas = from m in creamUdbContext
+                        select m;
+            }
+            else
+                datas = creamUdbContext.Where(m => m.MessageContext.Contains(keyword) || (m.ReplyContext != null && m.ReplyContext.Contains(keyword)));//當m.ReplayContext不為null才會執行Contains判斷，可以用於確保m.Replay的例外狀況
+            return View(datas);
         }
 
         // GET: Messages/Details/5
