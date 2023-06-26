@@ -76,9 +76,17 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" onsubmit="return confirmSave()">
         <input type="hidden" asp-for="MemberId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index" type="button" class="btn btn-light">Back to List</a>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        function confirmSave() {
+            return confirm("你是否確定刪除？");
+        }
+    </script>
+}

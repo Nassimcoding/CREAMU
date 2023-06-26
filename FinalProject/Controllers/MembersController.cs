@@ -27,6 +27,8 @@ namespace FinalProject.Controllers
         // GET: Members
         public async Task<IActionResult> Index(int? page, key key)
         {
+            ViewBag.StarYear = "--";
+            ViewBag.EndYear = "--";
             string keyword = key.textkey;
             int pageSize = 10;
             int pageNumber = page ?? 1;
@@ -70,6 +72,8 @@ namespace FinalProject.Controllers
                     totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
+                    ViewBag.StarYear = key.StarYear;
+                    ViewBag.EndYear = key.EndYear;
 
                     return View(pagedData);
                 }
@@ -110,6 +114,8 @@ namespace FinalProject.Controllers
                     totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
+                    ViewBag.StarYear = key.StarYear;
+                    ViewBag.EndYear = key.EndYear;
 
                     return View(pagedData);
                 }
@@ -236,12 +242,12 @@ namespace FinalProject.Controllers
                     // 呼叫 NewEdit 方法以編輯現有的員工資料
                     NewEdit(member, photo, existingMember, path);
 
-                    //if (photo != null && existingMember.Image == null)
-                    //{
-                    //    ModelState.AddModelError("Image", "請上傳正確照片格式 !");
-                    //    return View(member);
-                    //}
-                    
+                    if (photo != null && existingMember.Image == null)
+                    {
+                        ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                        return View(member);
+                    }
+
                     _context.Update(existingMember);
 
                     // 更新 Account

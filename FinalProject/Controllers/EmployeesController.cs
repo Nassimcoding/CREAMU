@@ -31,6 +31,9 @@ namespace FinalProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index(int? page, key key)
         {
+            ViewBag.StarYear = "--";
+            ViewBag.EndYear = "--";
+
             string keyword = key.textkey;
             int pageSize = 6;
             int pageNumber = page ?? 1;
@@ -44,6 +47,7 @@ namespace FinalProject.Controllers
 
             if (string.IsNullOrEmpty(keyword))
             {
+                
                 if (key.StarYear == 0 && key.EndYear == 0)
                 {
                     datas = _context.Employees;
@@ -62,8 +66,9 @@ namespace FinalProject.Controllers
                 }
                 else
                 {
-                    datas = _context.Employees.Where(p => (p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
-                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+                    datas = _context.Employees.
+                        Where(p => (p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                             (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
 
                     var pagedData = await datas.OrderBy(e => e.EmployeeId)
                                                .Skip((pageNumber - 1) * pageSize)
@@ -74,12 +79,16 @@ namespace FinalProject.Controllers
                     totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
+                    ViewBag.StarYear = key.StarYear;
+                    ViewBag.EndYear = key.EndYear;
+
 
                     return View(pagedData);
                 }
             }
             else
             {
+                
                 if (key.StarYear == 0 && key.EndYear == 0)
                 {
                     datas = _context.Employees.Where(p => p.Name.Contains(keyword) ||
@@ -112,8 +121,12 @@ namespace FinalProject.Controllers
 
                     totalCount = await datas.CountAsync();
                     totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
                     ViewBag.TotalPages = totalPages;
                     ViewBag.CurrentPage = pageNumber;
+                    ViewBag.StarYear = key.StarYear;
+                    ViewBag.EndYear = key.EndYear;
+
 
                     return View(pagedData);
                 }
@@ -155,7 +168,12 @@ namespace FinalProject.Controllers
         {
             Employee Newcreate = new Employee();
             Account account = new Account();
-           
+
+            if (photo == null || photo.Length == 0)
+            {
+                ModelState.Remove("photo");
+            }
+
             if (ModelState.IsValid)
             {
 
@@ -280,6 +298,11 @@ namespace FinalProject.Controllers
                 return NotFound();
             }
 
+            if (photo == null || photo.Length == 0)
+            {
+                ModelState.Remove("photo");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -338,7 +361,7 @@ namespace FinalProject.Controllers
         {
 
             var filename = FileName(path, photo);
-            existingEmployee.Image = filename;
+            existingEmployee.Image = (photo == null && existingEmployee.Image != null) ? existingEmployee.Image : filename;
             existingEmployee.Name = employee.Name;
             existingEmployee.Telephone = employee.Telephone;
             existingEmployee.Password = employee.Password;
