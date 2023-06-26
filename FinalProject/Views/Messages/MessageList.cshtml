@@ -3,6 +3,20 @@
 @{
     ViewData["Title"] = "MessageList";
 }
+
+<!--之後找個地方統一放BS-->
+<link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+
+<link href="~/css/reset.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/common.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/swiper.css" rel="stylesheet" type="text/css" />
+<link href="~/css/top_pages.css" rel="stylesheet" type="text/css" media="all" />
+
 <br />
 <br />
 <br />
@@ -10,86 +24,131 @@
 <br />
 
 <h1>Message</h1>
-
 <p>
     <a asp-action="AddNewMessage">Add New Message</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p style="text-align: right;">
+        關鍵字 @Html.TextBox("txtKeyword")  <input type="submit" value="查詢" />
+    </p>
+}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Active</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled">Disabled</a>
+  </li>
+</ul>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Score)
+            <th scope="col">
+                No.
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MessageTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReplyTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MessageContext)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReplyContext)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsReply)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsShow)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employee)
-            </th>
-            <th>
+            <th scope="col">
                 @Html.DisplayNameFor(model => model.Member)
             </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.MessageTime)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.MessageContext)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.ReplyTime)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.ReplyContext)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.IsReply)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.IsShow)
+            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Score)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MessageTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReplyTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MessageContext)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReplyContext)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsReply)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsShow)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.EmployeeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Member.MemberId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MessageId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MessageId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MessageId">Delete</a>
+        @{
+            int count = 0;
+            foreach (var item in Model) {
+                count++;
+                <tr>
+                    <th scope="row">
+                    @count
+                    </th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Member.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Score)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MessageTime)
+                    </td>
+                    <td>
+                        <!--只顯示前10個字-->
+                        <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                    </td>
+                    <td>
+                        <!--如果沒有圖片就顯示noPhoto.jpg。待修改，如果上傳的照片有問題或是找不到要怎麼處理!-->
+                        @{
+                            if (item.Image !=null && item.Image.ToString() !="NULL")
+                            {
+                                <img src="~/imgs/messageImg/@item.Image" width="100"/>
+                            }
+                            else
+                            {
+                                <img src="~/imgs/messageImg/noPhoto.jpg" width="100" />
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Employee.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReplyTime)
+                    </td>
+                    <td>
+                        <!--只顯示100px的字-->
+                        <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
+                        <!--只顯示前10個字-->
+                        <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsReply)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsShow)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MessageId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.MessageId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.MessageId">Delete</a>
                 
-            </td>
-        </tr>
+                    </td>
+            </tr>
+}
 }
     </tbody>
 </table>

@@ -3,6 +3,17 @@
 @{
     ViewData["Title"] = "Edit";
 }
+<link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+
+    <link href="~/css/reset.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/common.css" rel="stylesheet" type="text/css" media="all" />
+<link href="~/css/swiper.css" rel="stylesheet" type="text/css" />
+<link href="~/css/top_pages.css" rel="stylesheet" type="text/css" media="all" />
 
 <h1>Message</h1>
 
@@ -71,7 +82,7 @@
 </div>
 
 <div>
-    <a asp-action="MessageList">Back to List</a>
+    <a asp-action="MessageList" class="btn btn-outline-primary">Back to List</a>
 </div>
 
 @section Scripts {
