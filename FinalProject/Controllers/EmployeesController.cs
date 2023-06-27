@@ -282,6 +282,7 @@ namespace FinalProject.Controllers
             {
                 return NotFound();
             }
+            var accounts = await _context.Accounts.OrderBy(e => e.EmailId).ToListAsync();
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", employee.EmailId);
             return View(employee);
         }
@@ -293,6 +294,7 @@ namespace FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Employee employee, Account account, IFormFile photo)
         {
+           
             if (id != employee.EmployeeId)
             {
                 return NotFound();
@@ -307,6 +309,11 @@ namespace FinalProject.Controllers
             {
                 try
                 {
+                    if (IsAccountsDuplicate(employee.Email.Email))
+                    {
+                        ModelState.AddModelError("Email.Email", "帳號已存在。");
+                        return View(employee);
+                    }
                     // 查詢指定 id 的員工資料，並包含相關的 Email 資料
                     var existingEmployee = await _context.Employees
                                             .Include(e => e.Email) // 找到員工內的 EmailID 對應帳號 EmailID 的資料

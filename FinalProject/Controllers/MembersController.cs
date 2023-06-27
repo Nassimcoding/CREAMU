@@ -123,29 +123,6 @@ namespace FinalProject.Controllers
         }
 
         // GET: Members/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Members == null)
-            {
-                return NotFound();
-            }
-
-            var member = await _context.Members
-                .Include(m => m.Email)
-                .FirstOrDefaultAsync(m => m.MemberId == id);
-            if (member == null)
-            {
-                return NotFound();
-            }
-
-            return View(member);
-        }
-
-        // GET: Members/Create
- 
-
-      
-       
 
         private string FileName(string path, IFormFile photo)
         {
@@ -176,7 +153,7 @@ namespace FinalProject.Controllers
             return newFileName;
         }
 
-        private async Task<bool> IsAccountsDuplicateAsync(string accounts)
+        private async Task<bool> IsAccountsDuplicateAsync(string? accounts)
         {
             // 可以使用資料庫查詢或其他方式來檢查重複性
             // 如果帳號已存在，則回傳 true，否則回傳 false
@@ -234,7 +211,11 @@ namespace FinalProject.Controllers
             {
                 try
                 {
-                    
+                    if (await IsAccountsDuplicateAsync(member.Email.Email))
+                    {
+                        ModelState.AddModelError("Email.Email", "帳號已存在。");
+                        return View(member);
+                    }
 
                     string path = _images.WebRootPath + "/imgs/";
 

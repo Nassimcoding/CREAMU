@@ -27,6 +27,11 @@
                 <span asp-validation-for="Telephone" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Email.Email" class="control-label"></label>
+                <input asp-for="Email.Email" class="form-control" />
+                <span asp-validation-for="Email.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
@@ -55,11 +60,6 @@
                 <label asp-for="Image" class="form-label m-0"></label>
                 <input type="file" class="form-control form-control-sm" name="photo" />
                 <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email.Email" class="control-label"></label>
-                <input asp-for="Email.Email" class="form-control" type="email"/>
-                <span asp-validation-for="Email.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
