@@ -60,15 +60,24 @@ namespace FinalProject.Controllers
         // GET: Messages/Create
         public IActionResult AddNewMessage()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId");
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "MemberId");
+            ViewData["MessageId"] = _context.Messages.OrderByDescending(d => d.MessageId).Select(d => d.MessageId).FirstOrDefault() + 1;
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Name").Select(e => new SelectListItem
+            {
+                Value = e.Value.ToString(),
+                Text = $"{e.Value} - {e.Text}"
+            });
+            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "Name").Select(m => new SelectListItem
+            {
+                Value = m.Value.ToString(),
+                Text = $"{m.Value} - {m.Text}"
+            });
             return View();
-        }
-
+        }   
+  
         // POST: Messages/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+          [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddNewMessage([Bind("MessageId,MemberId,EmployeeId,Score,MessageTime,ReplyTime,MessageContext,ReplyContext,IsReply,IsShow,Image")] Message message)
         {
@@ -78,8 +87,19 @@ namespace FinalProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(MessageList));
             }
+            if (message.MessageContext == null)
+            {
+                message.MessageContext = string.Empty;
+            }
+            if (message.ReplyContext == null)
+            {
+                message.ReplyContext = string.Empty;
+            }
+            ViewData["MessageId"] = _context.Messages.OrderByDescending(d => d.MessageId).Select(d => d.MessageId).FirstOrDefault() + 1;
+            
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", message.EmployeeId);
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "MemberId", message.MemberId);
+            //(資料集合, select選項的value, select選項的text, 預選值)
+            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "MemberId", message.MemberId);//member的所有集合
             return View(message);
         }
 
@@ -96,8 +116,30 @@ namespace FinalProject.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "EmployeeId", message.EmployeeId);
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "MemberId", message.MemberId);
+            //顯示員工與會員名單
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "EmployeeId", "Name", message.EmployeeId).Select(e => new SelectListItem
+            {
+                Value = e.Value.ToString(),
+                Text = $"{e.Value} - {e.Text}"
+            });
+
+            var members = _context.Members.ToList();
+            var selectedMember = members.FirstOrDefault(m => m.MemberId == message.MemberId);
+
+            if (selectedMember != null)
+            {
+                string memberIdAndName = $"{selectedMember.MemberId} - {selectedMember.Name}";
+                ViewData["MemberId"] = memberIdAndName;
+            }
+            else
+            {
+                ViewData["MemberId"] = string.Empty;
+            }
+            /*ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "Name", message.MemberId).Select(e => new SelectListItem
+            {
+                Value = e.Value.ToString(),
+                Text = $"{e.Value} - {e.Text}"
+            });*/
             return View(message);
         }
 

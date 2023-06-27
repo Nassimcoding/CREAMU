@@ -59,7 +59,7 @@
 
 
 <!--分頁標籤的內容-->
-<div id="page_All" class="page">Page 1 content
+<div id="page_All" class="page">
     <table class="table">
     <thead>
         <tr>
@@ -146,7 +146,14 @@
                             <!--只顯示100px的字-->
                             <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
                             <!--只顯示前10個字-->
-                            <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.IsReply)
@@ -165,8 +172,8 @@
     </tbody>
 </table>
 </div>
-<!---------------------------------------------------------------<<>>--------------------------------------------------------------->
-<div id="page_isReplay" class="page">Page 2 conten
+<!---------------------------------------------------------------<<isReplay>>--------------------------------------------------------------->
+<div id="page_isReplay" class="page">
     <table class="table">
     <thead>
         <tr>
@@ -229,7 +236,14 @@
                         </td>
                         <td>
                             <!--只顯示前10個字-->
-                            <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             <!--如果沒有圖片就顯示noPhoto.jpg。待修改，如果上傳的照片有問題或是找不到要怎麼處理!-->
@@ -254,7 +268,14 @@
                             <!--只顯示100px的字-->
                             <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
                             <!--只顯示前10個字-->
-                            <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.IsReply)
@@ -273,8 +294,8 @@
     </tbody>
 </table>
 </div>
-<!---------------------------------------------------------------<<>>--------------------------------------------------------------->
-<div id="page_notReplay" class="page" onclick="changeLabel(@Model.Where(m => m.IsReply == false))">Page 3 content
+<!---------------------------------------------------------------<<notReplay>>--------------------------------------------------------------->
+<div id="page_notReplay" class="page">
     <table class="table">
     <thead>
         <tr>
@@ -337,7 +358,14 @@
                         </td>
                         <td>
                             <!--只顯示前10個字-->
-                            <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             <!--如果沒有圖片就顯示noPhoto.jpg。待修改，如果上傳的照片有問題或是找不到要怎麼處理!-->
@@ -362,7 +390,14 @@
                             <!--只顯示100px的字-->
                             <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
                             <!--只顯示前10個字-->
-                            <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.IsReply)
@@ -381,8 +416,8 @@
     </tbody>
 </table>
 </div>
-<!---------------------------------------------------------------<<>>--------------------------------------------------------------->
-<div id="page_isShow" class="page">Page 4 content
+<!---------------------------------------------------------------<<isShow>>--------------------------------------------------------------->
+<div id="page_isShow" class="page">
     <table class="table">
     <thead>
         <tr>
@@ -445,7 +480,14 @@
                         </td>
                         <td>
                             <!--只顯示前10個字-->
-                            <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             <!--如果沒有圖片就顯示noPhoto.jpg。待修改，如果上傳的照片有問題或是找不到要怎麼處理!-->
@@ -470,7 +512,14 @@
                             <!--只顯示100px的字-->
                             <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
                             <!--只顯示前10個字-->
-                            <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.IsReply)
@@ -489,8 +538,8 @@
     </tbody>
 </table>
 </div>
-<!---------------------------------------------------------------<<>>--------------------------------------------------------------->
-<div id="page_notShow" class="page">Page 5 content
+<!---------------------------------------------------------------<<notShow>>--------------------------------------------------------------->
+<div id="page_notShow" class="page">
     <table class="table">
     <thead>
         <tr>
@@ -553,7 +602,15 @@
                         </td>
                         <td>
                             <!--只顯示前10個字-->
-                            <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.MessageContext.Length > 10 ? item.MessageContext.Substring(0, 10) + "..." : item.MessageContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             <!--如果沒有圖片就顯示noPhoto.jpg。待修改，如果上傳的照片有問題或是找不到要怎麼處理!-->
@@ -578,7 +635,14 @@
                             <!--只顯示100px的字-->
                             <!--<span class="d-inline-block text-truncate" style="max-width: 100px;">@Html.DisplayFor(modelItem => item.ReplyContext)</span>-->
                             <!--只顯示前10個字-->
-                            <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            @if (item.ReplyContext != null)
+                            {
+                                <span>@(item.ReplyContext.Length > 10 ? item.ReplyContext.Substring(0, 10) + "..." : item.ReplyContext)</span>
+                            }
+                            else
+                            {
+                                <span>Null Context</span> <!-- 或任何您想要顯示的替代內容 -->
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.IsReply)
