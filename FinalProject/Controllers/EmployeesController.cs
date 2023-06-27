@@ -133,25 +133,6 @@ namespace FinalProject.Controllers
             }
         }
 
-        // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Employees == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employees
-                .Include(e => e.Email)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
-        }
-
         // GET: Employees/Create
         public IActionResult Create()
         {
