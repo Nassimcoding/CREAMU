@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+<div class="tooltip">
+    @Model
+    <span class="tooltip-text">@Model</span>
+</div>
+
+<style>
+    /* 悬停框的样式 */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+        /* 悬停框内容的样式 */
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            top: 20px;
+            left: 100%;
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* 悬停框显示的样式 */
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+</style>
+
+<script>
+    // 在DOM加载完成后绑定事件
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltips = document.getElementsByClassName("tooltip");
+
+        // 遍历所有悬停框元素
+        for (var i = 0; i < tooltips.length; i++) {
+            var tooltip = tooltips[i];
+
+            // 添加鼠标悬停事件处理程序
+            tooltip.addEventListener("mouseover", function () {
+                var tooltipText = this.getElementsByClassName("tooltip-text")[0];
+                tooltipText.style.visibility = "visible";
+                tooltipText.style.opacity = "1";
+            });
+
+            // 添加鼠标离开事件处理程序
+            tooltip.addEventListener("mouseout", function () {
+                var tooltipText = this.getElementsByClassName("tooltip-text")[0];
+                tooltipText.style.visibility = "hidden";
+                tooltipText.style.opacity = "0";
+            });
+        }
+    });
+</script>
