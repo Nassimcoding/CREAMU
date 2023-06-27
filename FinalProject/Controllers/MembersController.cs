@@ -103,7 +103,13 @@ namespace FinalProject.Controllers
                 else
                 {
                     datas = _context.Members.Where(p => (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
-                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear));
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) && 
+                                                         (   
+                                                            p.Name.Contains(keyword) ||
+                                                            p.Telephone.Contains(keyword) ||
+                                                            p.Email.Email.Contains(keyword) ||
+                                                            p.Address.Contains(keyword))
+                                                         );
 
                     var pagedData = await datas.OrderBy(e => e.MemberId)
                                                .Skip((pageNumber - 1) * pageSize)
