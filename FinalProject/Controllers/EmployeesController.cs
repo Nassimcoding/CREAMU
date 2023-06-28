@@ -13,6 +13,7 @@ using System.IO;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using NuGet.Packaging.Signing;
 using System.Collections.Immutable;
+using Microsoft.IdentityModel.Tokens;
 //using AspNetCore;
 
 namespace FinalProject.Controllers
@@ -31,11 +32,11 @@ namespace FinalProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index(int? page, key key)
         {
-            ViewBag.StarYear = "--";
-            ViewBag.EndYear = "--";
+            ViewBag.StarYear = "";
+            ViewBag.EndYear = "";
 
             string keyword = key.textkey;
-            int pageSize = 6;
+            int pageSize = 9;
             int pageNumber = page ?? 1;
 
             // 從資料庫中獲取資料並包含相關的 Email 資料
