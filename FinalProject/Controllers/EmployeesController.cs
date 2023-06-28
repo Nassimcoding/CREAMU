@@ -36,7 +36,7 @@ namespace FinalProject.Controllers
             ViewBag.EndYear = "";
 
             string keyword = key.textkey;
-            int pageSize = 9;
+            int pageSize = 6;
             int pageNumber = page ?? 1;
 
             // 從資料庫中獲取資料並包含相關的 Email 資料
