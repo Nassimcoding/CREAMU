@@ -217,11 +217,7 @@ namespace FinalProject.Controllers
             {
                 try
                 {
-                    if (await IsAccountsDuplicateAsync(member.Email.Email))
-                    {
-                        ModelState.AddModelError("Email.Email", "帳號已存在。");
-                        return View(member);
-                    }
+                   
 
                     string path = _images.WebRootPath + "/imgs/";
 

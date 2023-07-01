@@ -83,7 +83,6 @@ namespace FinalProject.Controllers
                     ViewBag.StarYear = key.StarYear;
                     ViewBag.EndYear = key.EndYear;
 
-
                     return View(pagedData);
                 }
             }
@@ -112,8 +111,8 @@ namespace FinalProject.Controllers
                 }
                 else
                 {
-                    datas = _context.Employees.Where(p => (p.Name.Contains(keyword) && p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
-                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) && (p.Name.Contains(keyword) ||
+                    datas = _context.Employees.Where(p => (p.JoinDate.Value.Year >= key.StarYear && p.JoinDate.Value.Year <= key.EndYear) ||
+                                                         (p.Birthday.Value.Year >= key.StarYear && p.Birthday.Value.Year <= key.EndYear) &&                             (p.Name.Contains(keyword) ||
                                                          p.Telephone.Contains(keyword) ||
                                                          p.Email.Email.Contains(keyword) ||
                                                          p.Address.Contains(keyword) ||
@@ -131,7 +130,6 @@ namespace FinalProject.Controllers
                     ViewBag.CurrentPage = pageNumber;
                     ViewBag.StarYear = key.StarYear;
                     ViewBag.EndYear = key.EndYear;
-
 
                     return View(pagedData);
                 }
@@ -295,11 +293,7 @@ namespace FinalProject.Controllers
             {
                 try
                 {
-                    if (IsAccountsDuplicate(employee.Email.Email))
-                    {
-                        ModelState.AddModelError("Email.Email", "帳號已存在。");
-                        return View(employee);
-                    }
+                    
                     // 查詢指定 id 的員工資料，並包含相關的 Email 資料
                     var existingEmployee = await _context.Employees
                                             .Include(e => e.Email) // 找到員工內的 EmailID 對應帳號 EmailID 的資料
@@ -352,7 +346,6 @@ namespace FinalProject.Controllers
         // NewEdit 方法用於更新現有員工的屬性
         private  void NewEdit(Employee employee, Employee existingEmployee, string path, IFormFile photo)
         {
-
             var filename = FileName(path, photo);
             existingEmployee.Image = (photo == null && existingEmployee.Image != null) ? existingEmployee.Image : filename;
             existingEmployee.Name = employee.Name;
@@ -362,8 +355,6 @@ namespace FinalProject.Controllers
             existingEmployee.Birthday = employee.Birthday;
             existingEmployee.JoinDate = employee.JoinDate;
             existingEmployee.Notes = employee.Notes;
-
-           
         }
 
         // GET: Employees/Delete/5
