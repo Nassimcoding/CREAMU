@@ -200,7 +200,6 @@ namespace FinalProject.Controllers
             var existingMember = await _context.Members
                                     .Include(e => e.Email) // 找到員工內的 EmailID 對應帳號 EmailID 的資料
                                     .FirstOrDefaultAsync(e => e.MemberId == id); // 第一個找到的值
-            
 
             if (id != member.MemberId)
             {
@@ -217,8 +216,6 @@ namespace FinalProject.Controllers
             {
                 try
                 {
-                   
-
                     string path = _images.WebRootPath + "/imgs/";
 
 
@@ -253,7 +250,6 @@ namespace FinalProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
             return View(member);
         }

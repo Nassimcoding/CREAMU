@@ -46,7 +46,7 @@ public partial class Employee
     [Display(Name = "備註")]
     public string? Notes { get; set; }
 
-    public virtual Account? Email { get; set; }
+    public virtual Account? Email { get; set; } =  null!;
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
