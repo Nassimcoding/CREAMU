@@ -128,7 +128,7 @@ namespace FinalProject.Controllers
             }
         }
 
-        // GET: Members/Details/5
+        
 
         private string FileName(string path, IFormFile photo)
         {
