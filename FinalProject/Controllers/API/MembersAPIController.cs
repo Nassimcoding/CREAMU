@@ -136,6 +136,8 @@ namespace FinalProject.Controllers.API
         [HttpPost("{id}/upload")]
         public async Task<string> ChangeFile(int id, [FromForm] PhotoImage photo)
         {
+            string path = _images.WebRootPath + "/imgs/";
+
             var member = await _context.Members.FindAsync(id);
             if (photo == null || string.IsNullOrEmpty(photo.photo.ContentType) || string.IsNullOrEmpty(photo.photo.FileName)) return "上傳失敗!";
 
@@ -144,17 +146,25 @@ namespace FinalProject.Controllers.API
 
             if (!allowExts.Contains(extension)) return "上傳格式錯誤!";
 
-            string path = _images.WebRootPath + "/imgs/";
+            // 刪除舊照片檔案
+            if (!string.IsNullOrEmpty(member.Image))
+            {
+                var oldFilePath = Path.Combine(path, member.Image);
+                if (System.IO.File.Exists(oldFilePath))
+                    System.IO.File.Delete(oldFilePath);
+            }
+
+            
             var newFileName = Guid.NewGuid().ToString("N") + extension;
             var newFileURL = Path.Combine(path, newFileName);
 
-            // Save the file
+            // 儲存新的照片
             using (var fileStream = new FileStream(newFileURL, FileMode.Create))
             {
                 await photo.photo.CopyToAsync(fileStream);
             }
 
-            // 跟新會員照片
+            // 更新會員照片
             member.Image = newFileName;
 
             await _context.SaveChangesAsync();
