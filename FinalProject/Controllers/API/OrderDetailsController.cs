@@ -24,7 +24,7 @@ namespace FinalProject.Controllers.API
 
         // GET: api/OrderDetails/5
         [HttpGet("{id}")]
-        public async Task<IEnumerable<OrderDetailsDTO>> GetOrderDetail(int id)
+        public IEnumerable<OrderDetailsDTO> GetOrderDetail(int id)
         {
             return _context.OrderDetails.Where(o => o.OrderId == id).Select(p => new OrderDetailsDTO
             {
@@ -48,8 +48,6 @@ namespace FinalProject.Controllers.API
             {
                 return "修改失敗!";
             }
-
-            
 
             try
             {
@@ -78,7 +76,6 @@ namespace FinalProject.Controllers.API
             checkOrderDetail.UnitPrice = orderDetail.UnitPrice;
             checkOrderDetail.Type = orderDetail.Type;
             checkOrderDetail.Notes = orderDetail.Notes;
-
 
             _context.Entry(checkOrderDetail).State = EntityState.Modified;
         }
