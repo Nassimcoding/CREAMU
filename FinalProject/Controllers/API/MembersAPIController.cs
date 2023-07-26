@@ -154,7 +154,7 @@ namespace FinalProject.Controllers.API
                     System.IO.File.Delete(oldFilePath);
             }
 
-            
+
             var newFileName = Guid.NewGuid().ToString("N") + extension;
             var newFileURL = Path.Combine(path, newFileName);
 
