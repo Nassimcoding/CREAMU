@@ -14,7 +14,6 @@ public partial class CreamUdbContext : DbContext
         : base(options)
     {
     }
-
     public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }

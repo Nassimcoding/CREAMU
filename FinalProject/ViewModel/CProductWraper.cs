@@ -1,5 +1,6 @@
 ﻿using FinalProject.Data;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinalProject.ViewModel
 {
@@ -19,6 +20,8 @@ namespace FinalProject.ViewModel
             set { _product = value; }
         }
 
+        [DisplayName("圖片")]
+        [Required(ErrorMessage = "請上傳商品圖片")]
         public string? ProductImage
         {
             get { return _product.ProductImage; }
@@ -32,13 +35,16 @@ namespace FinalProject.ViewModel
         }
 
         [DisplayName("名稱")]
+        [Required(ErrorMessage = "請輸入商品名稱")]
         public string? ProductName
         {
             get { return _product.ProductName; }
             set { _product.ProductName = value; }
         }
 
-        [DisplayName("敘述")]
+        [DisplayName("描述")]
+        [Required(ErrorMessage = "請輸入商品敘述")]
+        [MaxLength(500, ErrorMessage = "商品敘述不能超過300個字")]
         public string? Descript
         {
             get { return _product.Descript; }
@@ -52,6 +58,8 @@ namespace FinalProject.ViewModel
         }
 
         [DisplayName("售價")]
+        [Required(ErrorMessage = "請輸入商品售價")]
+        [Range(100, int.MaxValue, ErrorMessage = "商品售價必須大於等於100元")]
         public int? Price
         {
             get { return _product.Price; }
@@ -66,6 +74,7 @@ namespace FinalProject.ViewModel
         }
 
         [DisplayName("庫存")]
+        [Required(ErrorMessage = "請輸入庫存數量")]
         public int? ProductStock
         {
             get { return _product.ProductStock; }
@@ -93,6 +102,7 @@ namespace FinalProject.ViewModel
             set { _product.Type = value; }
         }
 
+        // 其他屬性...
         public IFormFile photo { get; set; }
     }
 }
