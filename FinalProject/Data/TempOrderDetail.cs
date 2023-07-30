@@ -21,6 +21,9 @@ public partial class TempOrderDetail
 
     public string? Notes { get; set; }
 
+    public string? Type { get; set; }
+
+
     public virtual Member? Member { get; set; }
 
     public virtual Product? Product { get; set; }

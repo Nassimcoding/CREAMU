@@ -5,6 +5,16 @@ namespace FinalProject.Data;
 
 public partial class Component
 {
+    public Component()
+    {
+        CombineDetailCbodyNavigations = new HashSet<CombineDetail>();
+        CombineDetailCheadNavigations = new HashSet<CombineDetail>();
+        CombineDetailClfootNavigations = new HashSet<CombineDetail>();
+        CombineDetailClhandNavigations = new HashSet<CombineDetail>();
+        CombineDetailCrfootNavigations = new HashSet<CombineDetail>();
+        CombineDetailCrhandNavigations = new HashSet<CombineDetail>();
+    }
+
     public int ComponentId { get; set; }
 
     public int? ModelId { get; set; }
