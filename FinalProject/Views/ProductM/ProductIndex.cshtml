@@ -11,7 +11,6 @@
 <br />
 <br />
 <br />
-<!-- 標題 ＆ 麵包屑 -->
 <div style="display: flex; flex-direction: column; text-align: left;">
     <nav aria-label="breadcrumb" style="margin-left:7px;">
         <ol class="breadcrumb" style="padding: 12px 0; margin: 0;">
@@ -20,144 +19,168 @@
             </li>
         </ol>
     </nav>
-    <h1 style="font-size:25px; margin-bottom:10px; margin-left:7px; font-weight:500;">商品後台管理</h1>
 </div>
+<div id="app">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <h1 style="font-size:25px; margin-bottom:10px; font-weight:600;">商品後台管理</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-<!-- 關鍵字 + 價格 查詢 -->
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom:20px;">
-    @using (Html.BeginForm())
-    {
-        <div style="display: flex; align-items: center;">
-            <div style="margin-right: 10px;">
-                @Html.TextBox("txtKeyword", null, new { placeholder = "輸入關鍵字", @class = "search-input form-control col-md-3", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
-                @Html.TextBox("minPrice", null, new { placeholder = "最低價", @class = "form-control col-md-1", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
-                <i style="color:#868283;"> ~ </i>
-                @Html.TextBox("maxPrice", null, new { placeholder = "最高價", @class = "form-control col-md-1", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
-                <button type="submit" class="btn btn-info" style="display: inline-block; color: white; opacity: 0.8; border-radius: 10px; margin-bottom: 4px; font-size: 14px;">查詢</button>
+                <form class="d-flex">
+                    @using (Html.BeginForm())
+                    {
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 10px;">
+                                @Html.TextBox("txtKeyword", null, new { placeholder = "輸入關鍵字", @class = "search-input form-control col-md-3", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
+                                @Html.TextBox("minPrice", null, new { placeholder = "最低價", @class = "form-control col-md-1", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
+                                <i style="color:#868283;"> ~ </i>
+                                @Html.TextBox("maxPrice", null, new { placeholder = "最高價", @class = "form-control col-md-1", style = "width: 120px; margin-left: 5px; display: inline-block; border: 2px solid #EAE4DA; border-radius: 10px; color: #868283; font-size: 14px;" })
+                                <button type="submit" class="btn btn-info" style="display: inline-block; color: white; opacity: 0.8; border-radius: 10px; margin-bottom: 4px; font-size: 14px; margin-left:5px;">查詢</button>
+                            </div>
+                        </div>
+                    }
+                    <!-- 下拉選單 vue -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <select class="form-select" v-model="selectedStatus" style="font-size:13px;">
+                                <option value="">商品狀態</option>
+                                <option value="all">所有商品</option>
+                                <option value="上架中">上架中</option>
+                                <option value="未上架">未上架</option>
+                                <option value="缺貨中">缺貨中</option>
+                                <option value="已停產">已停產</option>
+                            </select>
+                        </li>
+                    </ul>
+
+                    <button type="button" onclick="location.href='@Url.Action("Create")'" class="btn btn-success" style="color: white; opacity: 0.8; border-radius: 10px; font-size: 14px;">
+                        新增商品
+                    </button>
+                </form>
             </div>
         </div>
-    }
-    <button type="button" onclick="location.href='@Url.Action("Create")'" class="btn btn-primary" style="color: white; opacity: 0.8; border-radius: 10px; font-size: 14px;">
-        新增商品
-    </button>
-</div>
+    </nav>
 
-<div class="dashboard-wrapper user-dashboard product-list">
-    <div class="table-responsive-xxl">
-        <table id="your-table-id" class="table table-hover">
-            <thead class="responsive-table">
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.ProductImage)</th>
-                    <th>@Html.DisplayNameFor(model => model.ProductName)</th>
-                    <th>@Html.DisplayNameFor(model => model.Descript)</th>
-                    <th>
-                        <a href="javascript:void(0);" onclick="sortTable(3)">
-                            售價
-                            <i class="bi bi-caret-up-fill" style="display:none;"></i>
-                            <i class="bi bi-caret-down-fill" style="display:inline-block;"></i>
-                        </a>
-                    </th>
-                    <th>@Html.DisplayNameFor(model => model.ProductStatus)</th>
-                    <th>@Html.DisplayNameFor(model => model.ProductStock)</th>
-                    <th>@Html.DisplayNameFor(model => model.ReleaseDate)</th>
-                    <th>@Html.DisplayNameFor(model => model.UpdatedDate)</th>
-                    <th>@Html.DisplayNameFor(model => model.Type)</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+    <div class="dashboard-wrapper user-dashboard product-list">
+        <div class="table-responsive-xxl">
+            <table id="your-table-id" class="table table-hover">
+                <thead class="responsive-table">
                     <tr>
-                        <td><img src="~/images/@item.ProductImage" width="150" height="100" /></td>
-                        <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                        <th>@Html.DisplayNameFor(model => model.ProductImage)</th>
+                        <th>@Html.DisplayNameFor(model => model.ProductName)</th>
+                        <th>@Html.DisplayNameFor(model => model.Descript)</th>
+                        <th>
+                            <a href="javascript:void(0);" onclick="sortTable(3)">
+                                售價
+                                <i class="bi bi-caret-up-fill" style="display:none;"></i>
+                                <i class="bi bi-caret-down-fill" style="display:inline-block;"></i>
+                            </a>
+                        </th>
+                        <th>@Html.DisplayNameFor(model => model.ProductStatus)</th>
+                        <th>@Html.DisplayNameFor(model => model.ProductStock)</th>
+                        <th>@Html.DisplayNameFor(model => model.ReleaseDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.UpdatedDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.Type)</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><img src="~/images/@item.ProductImage" width="150" height="100" /></td>
+                            <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                            <td>
+                                <div class="product-description">
+                                    <div class="truncated-text">
+                                        @{
+                                            string truncatedDescript = string.Empty;
+                                            if (item.Descript != null)
+                                                truncatedDescript = item.Descript.Length > 5 ? item.Descript.Substring(0, 5) + "..." : item.Descript;
+                                        }
+                                        @truncatedDescript
+                                    </div>
 
-                        <td>
-                            <div class="product-description">
-                                <div class="truncated-text">
-                                    @{
-                                        string truncatedDescript = string.Empty;
-                                        if (item.Descript != null)
-                                            truncatedDescript = item.Descript.Length > 5 ? item.Descript.Substring(0, 5) + "..." : item.Descript;
-                                    }
-                                    @truncatedDescript
+                                    <div class="full-text">@item.Descript</div>
                                 </div>
-                                <div class="full-text">@item.Descript</div>
-                            </div>
+                            </td>
 
-                            @*價格*@
-                        <td>@Html.DisplayFor(modelItem => item.Price)</td>
-
-                        <!-- 商品狀態 -->
-                        <td>
+                            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                            <td>
                                 @if (item.ProductStatus == "上架中")
                                 {
-                                <span class="badge rounded-pill" style="background-color:#648eb1">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
+                                    <span class="badge rounded-pill" style="background-color:#648eb1">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
                                 }
                                 else if (item.ProductStatus == "缺貨中" || item.ProductStatus == "未上架")
                                 {
-                                <span class="badge rounded-pill bg-danger">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
+                                    <span class="badge rounded-pill bg-danger">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
                                 }
                                 else if (item.ProductStatus == "已停產")
                                 {
-                                <span class="badge rounded-pill" style="background-color:#ff8552">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
+                                    <span class="badge rounded-pill" style="background-color:#ff8552">@Html.DisplayFor(modelItem => item.ProductStatus)</span>
                                 }
                                 else
                                 {
                                     @Html.DisplayFor(modelItem => item.ProductStatus)
                                 }
-                        </td>
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.ProductStock)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ReleaseDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.UpdatedDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Type) </td>
+                            <td>
+                                <!-- 編輯 -->
+                                <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" onclick="location.href='@Url.Action("Edit", "ProductM", new { id = item.ProductId })'">
+                                    <i class="fa-solid fa-pen-to-square" style="color: #35444a;"></i>
+                                </button>
+                                <!-- 預覽 -->
+                                <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" data-bs-toggle="modal" data-bs-target="#productDetailModal" data-product-id="@item.ProductId">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #35444a;"></i>
+                                </button>
+                                <!-- 刪除 -->
+                                <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.ProductId">
+                                    <i class="fa-solid fa-trash" style="color: #35444a;"></i>
+                                </button>
 
-                        <td>@Html.DisplayFor(modelItem => item.ProductStock)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ReleaseDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.UpdatedDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Type) </td>
-                        <td>
-                            <!-- 編輯 -->
-                            <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" onclick="location.href='@Url.Action("Edit", "ProductM", new { id = item.ProductId })'">
-                                <i class="fa-solid fa-pen-to-square" style="color: #35444a;"></i>
-                            </button>
-                            <!-- 預覽 -->
-                            <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" data-bs-toggle="modal" data-bs-target="#productDetailModal" data-product-id="@item.ProductId">
-                                <i class="fa-solid fa-magnifying-glass" style="color: #35444a;"></i>
-                            </button>
-                            <!-- 刪除 -->
-                            <button type="button" class="btn btn-sm" style=" background-color:#fafafa;" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.ProductId">
-                                <i class="fa-solid fa-trash" style="color: #35444a;"></i>
-                            </button>
-
-                            <!-- 刪除商品跳出提示框 -->
-                            <div class="modal fade" id="confirmDeleteModal-@item.ProductId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">刪除商品</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p style="font-weight:500;">確定要刪除此商品嗎?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-danger" onclick="deleteProduct('@item.ProductId')">刪除</button>
+                                <!-- 刪除商品跳出提示框 -->
+                                <div class="modal fade" id="confirmDeleteModal-@item.ProductId" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">刪除商品</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p style="font-weight:500;">確定要刪除此商品嗎?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                                <button type="button" class="btn btn-danger" onclick="deleteProduct('@item.ProductId')">刪除</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <script>
-                                function deleteProduct(productId) {
-                                    // 執行刪除商品的相關程式碼
-                                    window.location.href = '@Url.Action("Delete", "ProductM")?id=' + productId;
-                                }
-                            </script>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                <script>
+                                    function deleteProduct(productId) {
+                                        // 執行刪除商品的相關程式碼
+                                        window.location.href = '@Url.Action("Delete", "ProductM")?id=' + productId;
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
 
 @*分頁功能*@
 <nav aria-label="Page navigation example">
@@ -217,6 +240,7 @@
     </div>
 </div>
 
+
 <!-- 商品預覽 JS -->
 <script>
     $(function () {
@@ -258,8 +282,8 @@
                 }
             });
         });
-    });</script>
-
+    });
+</script>
 
 
 @*價格排序*@
@@ -279,7 +303,6 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[columnIndex];
                 y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
-
                 // 將內容轉換為數字進行比較
                 var xValue = parseFloat(x.innerHTML.replace(/\$|,/g, ''));
                 var yValue = parseFloat(y.innerHTML.replace(/\$|,/g, ''));
@@ -296,13 +319,11 @@
                     }
                 }
             }
-
             if (shouldSwitch) {
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
             }
         }
-
         ascending = !ascending;
         var upArrow = table.querySelector(".bi-caret-up-fill");
         var downArrow = table.querySelector(".bi-caret-down-fill");
@@ -313,6 +334,52 @@
             upArrow.style.display = "inline-block";
             downArrow.style.display = "none";
         }
-    }
-</script>
+    }</script>
+
+
+
+@*下拉選單判斷商品狀態：上下架、缺貨、停產*@
+@section Scripts{
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module">
+        const { createApp, ref, watch } = Vue;
+
+        const app = createApp({
+            setup() {
+                const selectedStatus = ref(""); // 初始化選擇的商品狀態
+
+                // 更新 URL 中的查詢字符串參數的函式
+                function updateQueryStringParameter(uri, key, value) {
+                    const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+                    const separator = uri.indexOf('?') !== -1 ? "&" : "?";
+
+                    if (uri.match(re)) {
+                        return uri.replace(re, '$1' + key + "=" + value + '$2');
+                    } else {
+                        return uri + separator + key + "=" + value;
+                    }
+                }
+
+                // 監聽 selectedStatus 的變化
+                watch(selectedStatus, (newValue, oldValue) => {
+                    const currentUrl = window.location.href;
+
+                    // 使用選擇的商品狀態更新 URL
+                    const newUrl = updateQueryStringParameter(currentUrl, "productStatus", newValue);
+                    window.location.href = newUrl;
+                });
+
+                return { selectedStatus };
+            }
+        });
+
+        app.mount('#app'); // 掛載 Vue app 到 DOM</script>
+}
+
+
+
+
+
+
+
 
