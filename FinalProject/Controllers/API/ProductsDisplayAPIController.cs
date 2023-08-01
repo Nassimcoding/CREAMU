@@ -151,10 +151,32 @@ namespace FinalProject.Controllers.API
         [HttpPost]
         public async Task<String> PostProduct(ProductDetailToCart product)
         {
-            //search product temporderdetail data
+            //search product temporderdetail data or first time add data
             var tempcontext_tod = _context.TempOrderDetails;
+            //if temporderdetail don't have data will do this 
+            if (tempcontext_tod.FirstOrDefault() == null)
+            {
+                _context.TempOrderDetails.Add(new TempOrderDetail
+                {
+                    OrderDetailId = 1,
+                    MemberId = product.MemberId,
+                    ProductId = product.ProductId,
+                    Qty = product.Qty,
+                    UnitPrice = _context.Products.FirstOrDefault((e) => e.ProductId == product.ProductId).Price,
+                    Discount = null,
+                    Subtotal = product.Qty * _context.Products.FirstOrDefault((e) => e.ProductId == product.ProductId).Price,
+                    Notes = null,
+                    Type = "1",
+
+                });
+                //wow almost forget add content
+                await _context.SaveChangesAsync();
+                return "add data to cart success";
+            }
             var temp_tod_dto = await tempcontext_tod.Where((e) => e.MemberId == product.MemberId)
                 .OrderBy((e) => e.OrderDetailId).ToListAsync();
+
+            //return (Convert.ToString(temp_tod_dto[0].OrderDetailId));
 
             //search product price ... data
             var tempcontext_prod = _context.Products;
@@ -165,22 +187,23 @@ namespace FinalProject.Controllers.API
                 if (temp_tod_dto == null)
                 {
                     //if don't have any data add temporderdetail data
-                    //_context.TempOrderDetails.Add(new TempOrderDetail
-                    //{
-                    //    OrderDetailId = 1,
-                    //    MemberId = product.MemberId,
-                    //    ProductId = product.ProductId,
-                    //    Qty = product.Qty,
-                    //    UnitPrice = temp_prod_dto.Price,
-                    //    Discount = null,
-                    //    Subtotal = product.Qty * temp_prod_dto.Price,
-                    //    Notes = null,
-                    //    Type = "1",
+                    _context.TempOrderDetails.Add(new TempOrderDetail
+                    {
+                        OrderDetailId = 1,
+                        MemberId = product.MemberId,
+                        ProductId = product.ProductId,
+                        Qty = product.Qty,
+                        UnitPrice = temp_prod_dto.Price,
+                        Discount = null,
+                        Subtotal = product.Qty * temp_prod_dto.Price,
+                        Notes = null,
+                        Type = "1",
 
-                    //});
+                    });
+
                     //wow almost forget add content
-
-                    return "add data to cart fail";
+                    await _context.SaveChangesAsync();
+                    return "add data to cart success";
                 }
                 else
                 {

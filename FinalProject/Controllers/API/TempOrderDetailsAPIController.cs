@@ -132,7 +132,7 @@ namespace FinalProject.Controllers
         // POST: api/TempOrderDetailsAPI
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<string> PostTempOrderOrder()
+        public async Task<string> PostTempOrderOrder([FromBody] orderSentModel orderdata)
         {
             if (_context.TempOrderDetails.FirstOrDefaultAsync(e => e.MemberId == 1) == null)
             {
@@ -141,23 +141,60 @@ namespace FinalProject.Controllers
             var context_order = _context.Orders;
             var context_tod = _context.TempOrderDetails;
             //var temporder = context_order.Max(e => e.OrderId) + 1;
-            _context.Orders.Add(new Order
+            //return Convert.ToString(orderdata.totalp);
+            await _context.Orders.AddAsync(new Order
             {
-                //OrderId = context_order.Max(e => e.OrderId) + 1,
-                OrderId = 25,
-                EmployeeId = 1,
+                EmployeeId = orderdata.id,
                 //MemberId = id,
                 MemberId = 1,
                 OrderDate = DateTime.Now,
                 //TotalAmount = context_tod.Sum(e => e.Subtotal),
-                TotalAmount = 500,
-                OrderStatus = null,
-                PaymentStatus = null,
+                TotalAmount = orderdata.totalp,
+                OrderStatus = "0",
+                PaymentStatus = "0",
                 ShippingAddressId = null,
                 OrderNotes = null,
-
             });
+            // have bug if you click too fast will be ignore for whlle
+            System.Threading.Thread.Sleep(500);
+            await _context.SaveChangesAsync();
+            System.Threading.Thread.Sleep(500);
 
+            //find order max id
+            int OrderMaxId;
+            if (_context.Orders.FirstOrDefault() == null)
+            {
+                OrderMaxId = 1;
+            }
+            else
+            {
+                OrderMaxId = _context.Orders.Max(e => e.OrderId);
+            }
+
+            //transfer temporderdetail to orderdetail
+            var tempremove = await _context.TempOrderDetails.ToListAsync();
+            //use transfer variable to transfer temporderdetail to prderdetail
+            var temporderdetail = new List<OrderDetail>();
+            for (int i = 0; i < tempremove.Count; i++)
+            {
+                //orderdetail id will auto add 1
+                temporderdetail.Add(new OrderDetail
+                {
+
+                    OrderId = OrderMaxId,
+                    ProductId = tempremove[i].ProductId,
+                    Qty = tempremove[i].Qty,
+                    UnitPrice = tempremove[i].UnitPrice,
+                    Discount = tempremove[i].Discount,
+                    Subtotal = tempremove[i].Subtotal,
+                    Notes = tempremove[i].Notes,
+                    Type = tempremove[i].Type,
+                });
+            }
+            _context.OrderDetails.AddRange(temporderdetail);
+
+            //remove all tenporderdetail data
+            _context.TempOrderDetails.RemoveRange(tempremove);
             await _context.SaveChangesAsync();
             return "sent purchase order success";
         }
