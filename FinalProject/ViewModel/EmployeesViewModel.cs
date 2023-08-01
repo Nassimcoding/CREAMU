@@ -10,10 +10,13 @@ namespace FinalProject.ViewModel
 
         [Display(Name = "姓名")]
         [Required(ErrorMessage = "請輸入名稱!")]
+        [RegularExpression(@"^[a-zA-Z0-9\u4E00-\u9FA5 .,-]+$", ErrorMessage = "姓名只能包含中文、英文、數字、空格和特殊字符 !")]
         public string? Name { get; set; }
 
         [Display(Name = "電話")]
         [Required(ErrorMessage = "請輸入電話!")]
+        [RegularExpression(@"^[0-9-]+$", ErrorMessage = "電話只能包含數字和橫槓（-）!")]
+        [StringLength(15, MinimumLength = 8, ErrorMessage = "電話長度需在8到15位之間 !")]
         public string? Telephone { get; set; }
 
         [Display(Name = "密碼")]
@@ -31,6 +34,7 @@ namespace FinalProject.ViewModel
 
         [Display(Name = "地址")]
         [Required(ErrorMessage = "請輸入地址!")]
+        [RegularExpression(@"^[a-zA-Z0-9\u4E00-\u9FA5 ]+$", ErrorMessage = "地址只能包含中文、英文、數字和空格 !")]
         public string? Address { get; set; }
 
         public string? Image { get; set; }

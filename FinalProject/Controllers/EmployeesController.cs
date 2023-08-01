@@ -172,7 +172,7 @@ namespace FinalProject.Controllers
 
                 if (photo != null && Newcreate.Image == null)
                 {
-                    ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                    ModelState.AddModelError("Image", "上傳格式錯誤，請選擇支援的照片格式（.jpg、.jpeg、.png、.gif、.tif、.bmp）!");
                     return View(EmployeesViewModel);
                 }
                 // 取得最新創建的帳號

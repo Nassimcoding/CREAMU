@@ -182,7 +182,7 @@ namespace FinalProject.Controllers
             {
                 return NotFound();
             }
-            var account = await _context.Accounts.ToListAsync();
+            var account =  _context.Accounts.ToList();
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
             return View(member);
         }
@@ -224,7 +224,7 @@ namespace FinalProject.Controllers
 
                     if (photo != null && existingMember.Image == null)
                     {
-                        ModelState.AddModelError("Image", "請上傳正確照片格式 !");
+                        ModelState.AddModelError("Image", "上傳格式錯誤，請選擇支援的照片格式（.jpg、.jpeg、.png、.gif、.tif、.bmp）!");
                         return View(member);
                     }
 
