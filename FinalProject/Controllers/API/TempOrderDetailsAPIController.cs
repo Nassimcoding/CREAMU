@@ -159,7 +159,10 @@ namespace FinalProject.Controllers
             System.Threading.Thread.Sleep(500);
             await _context.SaveChangesAsync();
             System.Threading.Thread.Sleep(500);
-
+            if (_context.TempOrderDetails.FirstOrDefault() == null)
+            {
+                return "sent purchase order success";
+            }
             //find order max id
             int OrderMaxId;
             if (_context.Orders.FirstOrDefault() == null)
