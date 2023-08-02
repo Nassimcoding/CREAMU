@@ -112,7 +112,9 @@ namespace FinalProject.Controllers.API
                 List<CombineDetailDTO> CDs = JsonSerializer.Deserialize<List<CombineDetailDTO>>(combineDetail);
                 //CombineDetailDTO CDs = JsonSerializer.Deserialize<CombineDetailDTO>(combineDetail);
 
-                foreach(var item in CDs)
+                int ordermax = _context.Orders.Max(e => e.OrderId);
+
+                foreach (var item in CDs)
                 {
                     CombineDetail CD = new CombineDetail();
                     CD.Chead = Convert.ToInt32(item.Chead);
@@ -122,7 +124,8 @@ namespace FinalProject.Controllers.API
                     CD.Crfoot = Convert.ToInt32(item.Crfoot);
                     CD.Clfoot = Convert.ToInt32(item.Clfoot);
                     CD.SubTotal = Convert.ToInt32(item.SubTotal);
-                    CD.Type = Convert.ToString(item.Type);
+                    //CD.Type = Convert.ToString(item.Type);
+                    CD.Type = Convert.ToString(ordermax);
                     Console.WriteLine(CD);
                     _context.CombineDetails.Add(CD);
                 }
