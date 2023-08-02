@@ -195,5 +195,26 @@ namespace FinalProject.Controllers.API
         {
             return (_context.Members?.Any(e => e.MemberId == id)).GetValueOrDefault();
         }
+
+        // POST: api/MembersAPI/Sign
+        [HttpPost("Sign")]
+        public async Task<string> SignIn([FromBody] LoginData data)
+        {
+            var chackEmail = _context.Accounts.FirstOrDefault(e => e.Email == data.Email);
+            if (chackEmail == null) return "登入失敗!";
+
+            
+            var checkPassword = _context.Members.FirstOrDefault(e => e.EmailId == chackEmail.EmailId);
+            if (checkPassword == null) return "登入失敗!";
+            if (checkPassword.Password == data.Password)  return Convert.ToString(checkPassword.MemberId);
+            
+
+            return "登入失敗!";
+        }
+        public class LoginData
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
     }
 }
