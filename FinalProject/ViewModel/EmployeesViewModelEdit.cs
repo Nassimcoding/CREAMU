@@ -1,17 +1,15 @@
-﻿using FinalProject.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
 namespace FinalProject.ViewModel
 {
-    public class EmployeesViewModel
+    public class EmployeesViewModelEdit
     {
         public int EmployeeId { get; set; }
 
         [Display(Name = "姓名")]
         [Required(ErrorMessage = "請輸入名稱!")]
         [RegularExpression(@"^[a-zA-Z0-9\u4E00-\u9FA5 .,-]+$", ErrorMessage = "姓名只能包含中文、英文、數字、空格和特殊字符 !")]
-        [StringLength(10, ErrorMessage = "姓名長度不能超過10個字符。")]
         public string? Name { get; set; }
 
         [Display(Name = "電話")]
@@ -25,11 +23,6 @@ namespace FinalProject.ViewModel
         [StringLength(20, MinimumLength = 8, ErrorMessage = "請輸入8~20位數的密碼 !")]
         [RegularExpression(@"^[a-zA-Z0-9!@#$%^&*]+$", ErrorMessage = "密碼只能包含字母、數字和特殊字符 !")]
         public string? Password { get; set; }
-
-        [Display(Name = "再次確認密碼")]
-        [Required(ErrorMessage = "請再次輸入密碼!")]
-        [Compare("Password", ErrorMessage = "密碼不符合 !")]        
-        public string? CheckPassword { get; set; }
 
         public int? EmailId { get; set; }
 
@@ -52,12 +45,12 @@ namespace FinalProject.ViewModel
         [DataType(DataType.Date)]
         public DateTime? JoinDate { get; set; }
 
-       
-        [Required(ErrorMessage = "請輸入Email !")]
-        [EmailAddress(ErrorMessage = "請填寫正確Email !")]
+
+        [Required(ErrorMessage = "Email 是必填的。")]
+        [Display(Name = "Email")]
+        [EmailAddress(ErrorMessage = "請輸入有效的 Email 地址。")]
         public string Email { get; set; }
 
         public string? Notes { get; set; }
-
     }
 }

@@ -178,13 +178,37 @@ namespace FinalProject.Controllers
             }
 
             var member = await _context.Members.FindAsync(id);
+            MemberViewModel memberView = MemberChange(member);
             if (member == null)
             {
                 return NotFound();
             }
-            var account =  _context.Accounts.ToList();
+
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", member.EmailId);
-            return View(member);
+            return View(memberView);
+        }
+
+        private MemberViewModel MemberChange(Member? member)
+        {
+            Account account = _context.Accounts.Find(member.EmailId);
+
+            MemberViewModel memberViewModel = new MemberViewModel
+            {
+                Address = member.Address,
+                Birthday = member.Birthday,
+                Email = account.Email,
+                JoinDate = member.JoinDate,
+                EmailId = member.EmailId,
+                Image = member.Image,
+                Level = member.Level,
+                MemberId = member.MemberId,
+                Name = member.Name,
+                Notes = member.Notes,
+                Password = member.Password,
+                Telephone = member.Telephone,
+            };
+
+            return memberViewModel;
         }
 
         // POST: Members/Edit/5
@@ -192,7 +216,7 @@ namespace FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,Member member, IFormFile photo)
+        public async Task<IActionResult> Edit(int id,MemberViewModel member, IFormFile photo)
         {
             var accounts = await _context.Accounts.OrderBy(e => e.EmailId).ToListAsync();
             var members = await _context.Members.ToListAsync();
@@ -231,7 +255,7 @@ namespace FinalProject.Controllers
                     _context.Update(existingMember);
 
                     // 更新 Account
-                    existingMember.Email.Email = member.Email.Email;
+                    existingMember.Email.Email = member.Email;
                     _context.Update(existingMember.Email);
 
                     await _context.SaveChangesAsync();
@@ -254,7 +278,7 @@ namespace FinalProject.Controllers
             return View(member);
         }
 
-        private void NewEdit(Member member, IFormFile photo, Member? existingMember, string path)
+        private void NewEdit(MemberViewModel member, IFormFile photo, Member? existingMember, string path)
         {
             var filename = FileName(path, photo);
             existingMember.Image = (photo == null && existingMember.Image != null)? existingMember.Image : filename;
