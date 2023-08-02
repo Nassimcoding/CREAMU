@@ -262,13 +262,36 @@ namespace FinalProject.Controllers
             }
 
             var employee = await _context.Employees.FindAsync(id);
+            EmployeesViewModelEdit employeesViewModelEdit = await employeeChange(employee);
             if (employee == null)
             {
                 return NotFound();
             }
-            var accounts = await _context.Accounts.OrderBy(e => e.EmailId).ToListAsync();
+            
             ViewData["EmailId"] = new SelectList(_context.Accounts, "EmailId", "EmailId", employee.EmailId);
-            return View(employee);
+            return View(employeesViewModelEdit);
+        }
+
+        private async Task<EmployeesViewModelEdit> employeeChange(Employee? employee)
+        {
+            Account account = await _context.Accounts.FindAsync(employee.EmailId);
+            EmployeesViewModelEdit employeesViewModelEdit = new EmployeesViewModelEdit
+            {
+                JoinDate = employee.JoinDate,
+                EmailId = employee.EmailId,
+                EmployeeId = employee.EmployeeId,
+                Address = employee.Address,
+                Birthday = employee.Birthday,
+                Image = employee.Image,
+                Name = employee.Name,
+                Notes = employee.Notes,
+                Password = employee.Password,
+                Telephone = employee.Telephone,
+                Title = employee.Title,
+                Email = account.Email
+            };
+
+            return employeesViewModelEdit;
         }
 
         // POST: Employees/Edit/5
@@ -276,7 +299,7 @@ namespace FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Employee employee, Account account, IFormFile photo)
+        public async Task<IActionResult> Edit(int id, EmployeesViewModelEdit employee, Account account, IFormFile photo)
         {
            
             if (id != employee.EmployeeId)
@@ -321,7 +344,7 @@ namespace FinalProject.Controllers
                     _context.Update(existingEmployee);
 
                     // 更新 Account
-                    existingEmployee.Email.Email = employee.Email.Email;
+                    existingEmployee.Email.Email = employee.Email;
                     _context.Update(existingEmployee.Email);
 
                     await _context.SaveChangesAsync();
@@ -344,7 +367,7 @@ namespace FinalProject.Controllers
         }
 
         // NewEdit 方法用於更新現有員工的屬性
-        private  void NewEdit(Employee employee, Employee existingEmployee, string path, IFormFile photo)
+        private  void NewEdit(EmployeesViewModelEdit employee, Employee existingEmployee, string path, IFormFile photo)
         {
             var filename = FileName(path, photo);
             existingEmployee.Image = (photo == null && existingEmployee.Image != null) ? existingEmployee.Image : filename;
