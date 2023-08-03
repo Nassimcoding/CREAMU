@@ -29,6 +29,7 @@ namespace FinalProject.Controllers.API
         public async Task<string> ChangeFile(int orderId, [FromForm] PhotoImage photo)
         {
             string path = _images.WebRootPath + "/orderImgs/";
+            Directory.CreateDirectory(path);
 
             var orider = await _context.OrderDetails.FindAsync(orderId);
             if (photo == null)
